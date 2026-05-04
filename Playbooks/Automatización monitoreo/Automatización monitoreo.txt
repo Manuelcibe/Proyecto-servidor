@@ -1,0 +1,114 @@
+Automatización monitorización
+
+Archivo playbook.yml:
+
+---
+- name: Preparacion y Preguntas
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars_prompt:
+    - name: ips_extra
+      prompt: "¿Quieres instalar Node Exporter en otras maquinas? Pon sus IPs separadas por comas (ej: 192.168.1.108, 192.168.1.109). Si no quieres ninguna, pulsa Enter:"
+      private: no
+  tasks:
+    - name: Registrar maquinas extra en la memoria de Ansible
+      add_host:
+        name: "{{ item | trim }}"
+        groups: nodos_extra
+        ansible_user: manu
+      loop: "{{ ips_extra.split(',') }}"
+      when: ips_extra | length > 0 and item | trim != ''
+
+- name: Configurar la Maquina Jefe (Grafana + Prometheus + Node Exporter)
+  hosts: localhost
+  connection: local
+  become: yes
+  tasks:
+    - name: Instalar paquetes base (Grafana, Prom, Node Exporter)
+      apt:
+        name: [curl, gnupg, software-properties-common, prometheus, prometheus-node-exporter]
+        update_cache: yes
+        state: present
+
+    - name: Añadir repositorio de Grafana e instalarlo
+      shell: |
+        curl -fsSL https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /usr/share/keyrings/grafana.gpg > /dev/null
+        echo "deb [signed-by=/usr/share/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
+        apt update && apt install grafana -y
+      args:
+        creates: /etc/apt/sources.list.d/grafana.list
+
+    - name: Inyectar configuracion de Prometheus
+      copy:
+        dest: /etc/prometheus/prometheus.yml
+        content: |
+          global:
+            scrape_interval: 15s
+          scrape_configs:
+            - job_name: "prometheus_jefe"
+              static_configs:
+                - targets: ["localhost:9090"]
+            - job_name: "nodos_monitorizados"
+              static_configs:
+                - targets:
+                  - "localhost:9100"
+          {% if groups['nodos_extra'] is defined %}
+          {% for host in groups['nodos_extra'] %}
+                  - "{{ host }}:9100" 
+          {% endfor %}
+          {% endif %}
+      notify: Reiniciar Prometheus
+
+    - name: Crear carpeta para que Grafana lea la base de datos solo
+      file:
+        path: /etc/grafana/provisioning/datasources
+        state: directory
+
+    - name: Auto-conectar Grafana a Prometheus
+      copy:
+        dest: /etc/grafana/provisioning/datasources/prometheus.yml
+        content: |
+          apiVersion: 1
+          datasources:
+            - name: Prometheus
+              type: prometheus
+              access: proxy
+              url: http://localhost:9090
+              isDefault: true
+              editable: false
+      notify: Reiniciar Grafana
+
+    - name: Arrancar todos los servicios del Jefe
+      systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop: [prometheus, prometheus-node-exporter, grafana-server]
+
+  handlers:
+    - name: Reiniciar Prometheus
+      systemd:
+        name: prometheus
+        state: restarted
+    - name: Reiniciar Grafana
+      systemd:
+        name: grafana-server
+        state: restarted
+
+- name: Instalar Node Exporter en las maquinas extra
+  hosts: nodos_extra
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: Instalar node-exporter
+      apt:
+        name: prometheus-node-exporter
+        state: present
+        update_cache: yes
+
+    - name: Arrancar servicio node-exporter
+      systemd:
+        name: prometheus-node-exporter
+        state: started
+        enabled: yes

@@ -1,0 +1,34 @@
+Playbook instalación grafana con prometheus
+
+Playbook:
+
+Archivo install_all.yml:
+
+---
+- name: Instalacion Prometheus y Grafana
+  hosts: monitoring
+  become: yes
+  tasks:
+    - name: Instalar paquetes base
+      apt:
+        name: [curl, gnupg, software-properties-common, prometheus, prometheus-node-exporter]
+        update_cache: yes
+        state: present
+
+    - name: Repositorio Grafana
+      shell: |
+        curl -fsSL https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /usr/share/keyrings/grafana.gpg > /dev/null
+        echo "deb [signed-by=/usr/share/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
+        apt update && apt install grafana -y
+
+    - name: Arrancar servicios
+      systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop: [prometheus, prometheus-node-exporter, grafana-server]
+
+Archivo inventory.ini:
+
+[monitoring]
+localhost ansible_connection=local
