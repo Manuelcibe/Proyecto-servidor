@@ -1,0 +1,20 @@
+La funcion que se hizo para este playbook fue automatizar la instalacion de monitorizacion en una sola maquina, instala el grafana para poder ver los datos de forma clara y tambien instala el Prometheus que es la base de datos.
+Pero en este es el que no esta automatizado y falta conectar el prometheus y el grafana juntos aparte de que solo lo hace en la maquina que corres el playbook y no de forma remota.
+
+Archivos:
+install_all.yml: Playbook principal que hace que se descarge e installe el grafana y prometheus y arranca los servicios.
+inventory.ini: Archivo de inventario que define el grupo "monitoring", configurado para ejecutarse localmente.
+
+Ejecución
+Instala los paquetes base del sistema y las herramientas de Prometheus directamente desde los repositorios.
+Descarga la clave GPG y añade el repositorio oficial de Grafana para instalar su versión estable mediante comandos de terminal.
+Arranca y habilita de forma automática los servicios prometheus, prometheus-node-exporter y grafana-server para que queden funcionando y se inicien con el sistema operativo.
+
+Puertos Utilizados
+Grafana: Puerto 3000
+Prometheus: Puerto 9090
+Node Exporter: Puerto 9100
+
+Ejecución
+Para lanzar esta instalación, ejecuta el siguiente comando asegurándote de indicarle el archivo de inventario:
+ansible-playbook -i inventory.ini install_all.yml --ask-become-pass
