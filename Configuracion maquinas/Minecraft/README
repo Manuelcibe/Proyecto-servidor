@@ -1,0 +1,27 @@
+1. Entorno de Red y Servidor Base
+Todo el sistema esta alojado y contenido dentro de una maquina virtual/contenedor en Proxmox (LXC) identificado con el nombre minecraft. A nivel de red, cuenta con una dirección IP local estatica (192.168.200.21), lo que permite que el sistema de enrutamiento y los distintos servicios hablen entre si de forma segura sin exponer los puertos crudos directamente al exterior.
+
+2. El Nucleo: Servidor de Minecraft
+El centro del proyecto es un servidor de Minecraft Java Edition corriendo sobre la version Paper 1.21.4, gestionado desde el panel de control PufferPanel. Esta preparado para aceptar tanto a jugadores premium como no premium.
+
+Para que el servidor sea atractivo y profesional, se apoya en varios modulos fundamentales:
+
+Gestión de Permisos: Se utiliza LuckPerms conectado a una base de datos para administrar de forma global los rangos del servidor (VIP, MOD, ADMIN, OWNER, etc.).
+
+Interfaz Visual: El plugin TAB gestiona toda la estetica de la lista de jugadores, el marcador derecho (scoreboard) y los prefijos en el chat, mostrando información util en tiempo real como el balance economico del jugador o el numero de usuarios conectados.
+
+Sincronización Web: Mediante la extensión de NamelessMC, el servidor del juego esta en comunicación constante con la pagina web para unificar las cuentas de los jugadores y sus roles.
+
+Tienda: Una integración directa con Tebex que automatiza las compras y donaciones dentro del juego.
+
+3. Plataforma Web y Comunidad
+Para agrupar a la comunidad fuera del juego, el proyecto cuenta con el gestor de contenidos NamelessMC. Este sistema web corre de forma local apoyado en un servidor Apache y PHP, los cuales han sido tuneados en sus respectivos archivos de configuración para manejar bases de datos locales, soportar trafico constante y gestionar sesiones de usuario de forma fluida. Es el centro neuralgico donde los usuarios pueden ir a los foros, ver sus perfiles y acceder a la tienda.
+
+4. Sistema de Correo Electronico Interno
+Para que la plataforma web parezca un producto real y profesional, necesita poder enviar correos de verificación y de recuperación de contraseñas. Para lograr esto, se ha montado un servicio local de envio de correos utilizando Postfix. Ademas, para garantizar que estos correos no acaben en la carpeta de spam de los jugadores, se ha configurado OpenDKIM, un sistema que firma digitalmente cada correo saliente confirmando que provienen oficialmente del dominio nuloapp.com.
+
+5. Asistente de IA (Hostify Bot)
+Una de las partes mas innovadoras del proyecto es la integración de Inteligencia Artificial en la pagina web. Se ha programado un widget de chat interactivo que aparece en el pie de pagina de la web. Cuando un jugador escribe una duda, el mensaje viaja a un script proxy local (gemini-proxy.php). Este script se conecta de forma privada con la API de Google Gemini, a la cual se le ha inyectado un contexto previo estricto para que actue unicamente como el asistente amigable de Hostify, respondiendo dudas sobre rangos, comandos, economia y versiones del juego.
+
+6. Conectividad Segura con el Exterior
+Finalmente, para conectar todo este ecosistema local con el publico general de internet, se utiliza la tecnologia de Cloudflare Tunnels. En lugar de abrir puertos en el router, un servicio interno crea un tunel encriptado hasta los servidores de Cloudflare, mapeando el puerto web local para que sea accesible a traves del dominio limpio y seguro hostify.nuloapp.com, proveyendo ademas de un certificado SSL automatico y protección contra ataques de denegación de servicio.

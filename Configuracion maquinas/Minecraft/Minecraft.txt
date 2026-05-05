@@ -1,0 +1,2972 @@
+Nombre del contenedor 
+cat /etc/hostname
+minecraft
+
+Mapeo de nombres locales 
+root@minecraft:~# cat /etc/hosts
+127.0.0.1       localhost
+::1             localhost ip6-localhost ip6-loopback
+ff02::1         ip6-allnodes
+ff02::2         ip6-allrouters
+# --- BEGIN PVE ---
+192.168.200.21 minecraft.dm minecraft
+# --- END PVE ---
+
+Ip servidor
+root@minecraft:~# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: eth0@if12: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether bc:24:11:e2:5e:f5 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 192.168.200.21/24 brd 192.168.200.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::be24:11ff:fee2:5ef5/64 scope link 
+       valid_lft forever preferred_lft forever
+root@minecraft:~# 
+
+Config principal del servidor MC 
+root@minecraft:~# cat /var/lib/pufferpanel/servers/5a36d5c9/server.properties
+#Minecraft server properties
+#Thu Apr 30 19:02:03 UTC 2026
+accepts-transfers=false
+allow-flight=false
+allow-nether=true
+broadcast-console-to-ops=true
+broadcast-rcon-to-ops=true
+bug-report-link=
+debug=false
+difficulty=easy
+enable-command-block=false
+enable-jmx-monitoring=false
+enable-query=false
+enable-rcon=false
+enable-status=true
+enforce-secure-profile=true
+enforce-whitelist=false
+entity-broadcast-range-percentage=100
+force-gamemode=false
+function-permission-level=2
+gamemode=survival
+generate-structures=true
+generator-settings={}
+hardcore=false
+hide-online-players=false
+initial-disabled-packs=
+initial-enabled-packs=vanilla
+level-name=world
+level-seed=
+level-type=minecraft\:normal
+log-ips=true
+max-chained-neighbor-updates=1000000
+max-players=20
+max-tick-time=60000
+max-world-size=29999984
+motd=A Minecraft Server\n§9 hosted on PufferPanel
+network-compression-threshold=256
+online-mode=true
+op-permission-level=4
+pause-when-empty-seconds=-1
+player-idle-timeout=0
+prevent-proxy-connections=false
+pvp=true
+query.port=25565
+rate-limit=0
+rcon.password=
+rcon.port=25575
+region-file-compression=deflate
+require-resource-pack=false
+resource-pack=
+resource-pack-id=
+resource-pack-prompt=
+resource-pack-sha1=
+server-ip=0.0.0.0
+server-port=25565
+simulation-distance=10
+spawn-monsters=true
+spawn-protection=16
+sync-chunk-writes=true
+text-filtering-config=
+text-filtering-version=0
+use-native-transport=true
+view-distance=10
+white-list=false
+
+Aceptar EULA de Mojang
+root@minecraft:~# cat /var/lib/pufferpanel/servers/5a36d5c9/eula.txt
+eula=true
+
+Config plugin Tebex 
+root@minecraft:~# cat /var/lib/pufferpanel/servers/5a36d5c9/plugins/Tebex/config.yml
+# Tebex v2.2.1 - https://tebex.io
+# Check out https://tebex.io/docs if you need help.
+
+# Buy Command
+# This is the command that players will use to open the Tebex GUI.
+buy-command:
+  enabled: true
+  name: buy
+
+# Whether to check for updates or not.
+check-for-updates: true
+
+# Automatic reporting of exceptions to Tebex
+auto-report-enabled: true
+
+# Debug Mode
+verbose: false
+
+# GUI Settings
+gui:
+  menu:
+    home:
+      title: Server Shop
+      rows: 3
+    category:
+      title: Viewing %category%
+      rows: 3
+    sub-category:
+      title: Viewing %sub_category% (%category%)
+      rows: 1
+  item:
+    back:
+      name: '&cBack'
+      material: COMPASS
+      lore: []
+    category:
+      name: '&b%category%'
+      material: CHEST
+      lore:
+      - '&7Click to view packages!'
+    package-sale:
+      name: '&b%package_name%'
+      material: PAPER
+      lore:
+      - '&7Price: &f%package_currency%%package_sale_price% &7(&m%package_currency%%package_price%&r&7)'
+      - '&7'
+      - '&7Click to purchase!'
+    package:
+      name: '&b%package_name%'
+      material: PAPER
+      lore:
+      - '&7Price: &f%package_currency%%package_price%'
+      - '&7'
+      - '&7Click to purchase!'
+
+# These settings are exclusive to this server.
+# Do not share these credentials with anyone.
+server:
+  # Proxy Mode
+  # If you are using BungeeCord/Velocity, set this to true.
+  proxy: false
+  
+  # Secret Key
+  # This is used to identify your server.
+  secret-key: Es secreto
+
+# Configuration Version
+# !! Do not change this value !!
+config-version: 2
+root@minecraft:~# 
+
+Config plugin NamelessMC 
+
+root@minecraft:~# cat /var/lib/pufferpanel/servers/5a36d5c9/plugins/NamelessMC/main.yaml
+# Nameless Plugin configuration
+# Something not working? Please see our troubleshooting guide: https://docs.namelessmc.com/en/integrations/plugin-troubleshooting
+# Reload the plugin using /nlpl reload
+
+api:
+  # Enable the API and obtain the API URL and API key in StaffCP > Configuration > API
+  url: "http://192.168.200.21/index.php?route=/api/v2"
+  key: "SECRET"
+  # Find your server id in StaffCP > Integrations > Minecraft > Minecraft Servers
+  server-id: 1
+  # Print detailed information about website requests and responses
+  debug: false
+  # Maximum time in milliseconds to wait for a response from the website. Sensible values are 3s-15s.
+  # Syntax: https://en.wikipedia.org/wiki/ISO_8601#Durations
+  timeout: 'PT10S'
+  # When enabled, the plugin will ignore server UUIDs and instead generate offline-mode UUIDs from player
+  # usernames to make API requests. The website must also be configured to use offline-mode UUIDs.
+  # This feature is experimental. It may help with bedrock (floodgate/geyser) compatibility.
+  offline-uuids: false
+
+# Data depends on platform: https://docs.namelessmc.com/en/integrations/plugin-data-sender
+# The server data sender sends data about this server to the website, periodically. It is essential for many
+# features to work like group sync, username sync and placeholders.
+# Note that currently the website doesn't use the plugin for server status and player list yet, even though
+# the plugin sends this information. You'll need to configure server pinging separately on the website.
+server-data-sender:
+  enabled: true
+  # Duration between sending data https://en.wikipedia.org/wiki/ISO_8601#Durations
+  interval: 'PT30S'
+  # Send PlaceholderAPI placeholders, to be used by NamelessMC (leaderboards, profile pages) or modules.
+  # This is only supported on the 'oldbukkit', 'spigot', and 'paper' platforms.
+  placeholders:
+    enabled: false
+    # global placeholders to send to the website (list of placeholder names without %%). Not currently used by the website.
+    global: []
+    # player-specific placeholders to send to the website (list of placeholder names without %%)
+    player: []
+
+# Group sync will, when enabled, send Minecraft groups to the website.
+#  > Select a group sync server: StaffCP > Integrations > Minecraft > Minecraft Servers
+#  > Configure groups: StaffCP > Configuration > API > Group sync.
+# This option is for NamelessMC v2.1.0+ only. In older versions, group sync is done by server-data-sender.
+group-sync:
+  enabled: true
+  # Duration between sending groups https://en.wikipedia.org/wiki/ISO_8601#Durations
+  interval: 'PT30S'
+
+logging:
+  # Show more information in log
+  verbose: false
+
+# Send a message to players who don't have a NamelessMC account when they join
+not-registered-join-message: false
+
+# Send website notifications in chat on join, if there are any
+join-notifications: false
+
+# For a list of valid languages, check file names in the 'languages' directory.
+# To help translate the plugin to your language, visit https://translate.namelessmc.com
+# If you want to customize messages for your server you can edit the language files.
+language: en_UK
+datetime-format: 'yyyy-MM-dd HH:mm:ss'
+
+# Periodically send website announcements in chat
+announcements:
+  enabled: false
+  # Every <interval> a random announcement is chosen (if there are any) and sent to the player
+  interval: 'PT10M'
+  # If specified, it will only show announcements with the respective display page.
+  # display: Forums
+
+# Allow players to specify a username, other than their Minecraft username, when using the register command.
+register-custom-username: true
+
+# ------------------ Options below only supported on Bukkit platforms ------------------ #
+
+# When a player is banned, also ban their website account if they have one.
+# This is event based, so it will not affect players that are already banned.
+sync-ban-to-website: false
+
+# User sync is only supported on the 'oldbukkit', 'spigot' and 'paper' platforms.
+user-sync:
+  enabled: false
+  # Number of seconds in between syncs
+  poll-interval: 'PT30S'
+  # List of UUIDs to exclude (never add to or remove from the whitelist or ban list)
+  # These UUIDs must be written with dashes. If you've enabled api-usernames, enter usernames instead.
+  exclude: []
+
+  # Auto whitelist registered players.
+  #
+  # When enabled, the plugin will automatically whitelist players that are registered on the website.
+  # Warning: Anyone who is not registered on the website will be removed from the whitelist, also
+  # if they were added before enabling this option!
+  whitelist:
+    enabled: false
+    # Only whitelist verified users
+    verified-only: false
+    # Enter a group id here to only whitelist users with that group
+    only-with-group: -1
+
+  # Ban players who are banned on the website, and pardon players who are not banned on the website.
+  bans:
+    enabled: false
+
+# Retrieving user info from NamelessMC and make it available as PlaceholderAPI placeholders.
+# NOT the same as sending placeholders to the website, which can be configured above!
+# https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/Placeholders#nameless-plugin
+# This feature is only supported on the 'oldbukkit', 'spigot', and 'paper' platforms.
+retrieve-placeholders:
+  enabled: false
+  # Duration between retrieving placeholders https://en.wikipedia.org/wiki/ISO_8601#Durations
+  interval: 'PT30S'
+root@minecraft:~# 
+
+Config plugin TAB 
+
+root@minecraft:~# cat /var/lib/pufferpanel/servers/5a36d5c9/plugins/TAB/config.yml
+# https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Header-&-Footer
+header-footer:
+  enabled: true
+  header:
+    - "<#FFFFFF>&m                                                </#FFFF00>"
+    - "&3&lServer name"
+    - "&7&l>> %animation:Welcome%&3 &l%player%&7&l! &7&l<<"
+    - "&7Online players: &f%online%"
+    - "&6Online staff: &e%staffonline%"
+    - ""
+  footer:
+    - "%animation:time%"
+    - "&2Ping: %ping%"
+    - "&7&l Used memory: %memory-used% MB / %memory-max% MB"
+    - ""
+    - "&7Visit our webpage %animation:web%"
+    - "<#FFFFFF>&m                                                </#FFFF00>"
+  disable-condition: '%world%=disabledworld'
+  per-world:
+    world1:
+      header:
+        - "an example of world with custom"
+      footer:
+        - "header/footer and prefix/suffix"
+    world2;world3:
+      header:
+        - "This is a shared header for"
+        - "world2 and world3"
+  per-server:
+    server1:
+      header:
+        - "an example of server with custom header"
+
+# https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Tablist-name-formatting
+tablist-name-formatting:
+  enabled: true
+  anti-override: true
+  disable-condition: '%world%=disabledworld'
+
+# https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Nametags
+scoreboard-teams:
+  enabled: true
+  enable-collision: true
+  invisible-nametags: false
+  anti-override: true
+  # https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Sorting-players-in-tablist
+  sorting-types:
+    - "GROUPS:owner,admin,mod,helper,builder,vip,default"
+    - "PLACEHOLDER_A_TO_Z:%player%"
+  case-sensitive-sorting: true
+  can-see-friendly-invisibles: false
+  disable-condition: '%world%=disabledworld'
+
+# https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Playerlist-Objective
+playerlist-objective:
+  enabled: true
+  value: "%ping%"
+  fancy-value: "&7Ping: %ping%"
+  disable-condition: '%world%=disabledworld'
+
+# https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Belowname
+belowname-objective:
+  enabled: false
+  value: "%health%"
+  title: "&cHealth"
+  fancy-value: "&c%health%"
+  fancy-value-default: "NPC"
+  disable-condition: '%world%=disabledworld'
+
+# https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Spectator-fix
+prevent-spectator-effect:
+  enabled: false
+
+# https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Bossbar
+bossbar:
+  enabled: false
+  toggle-command: /bossbar
+  remember-toggle-choice: false
+  hidden-by-default: false
+  bars:
+    ServerInfo:
+      style: "PROGRESS" # for 1.9+: PROGRESS, NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20
+      color: "%animation:barcolors%" # for 1.9+: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW
+      progress: "100" # in %
+      text: "&fWebsite: &bwww.domain.com"
+
+# https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Scoreboard
+scoreboard:
+  enabled: true
+  toggle-command: '/sb'
+  remember-toggle-choice: true
+  hidden-by-default: false
+  use-numbers: false
+  static-number: 0
+  delay-on-join-milliseconds: 0
+  scoreboards:
+    default:
+      title: "&6&lHOSTIFY"
+      lines:
+        - ''
+        - '&f&lTu Perfil'
+        - '&7Nombre: &f%player%'
+        - '&7Rango: &f%luckperms_prefix%'
+        - '&7Dinero: %vault_eco_balance_formatted%'
+        - ''
+        - '&f&lServidor'
+        - '&7Online: &f%online%/%server_max_players%'
+        - '&7TPS: &f%tps%'
+        - ''
+        - '&6hostify.nuloapp.com'
+# https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Layout
+layout:
+  enabled: false
+  direction: COLUMNS
+  default-skin: mineskin:383747683
+  enable-remaining-players-text: true
+  remaining-players-text: '... and %s more'
+  empty-slot-ping-value: 1000
+  layouts:
+    default:
+      fixed-slots:
+        - '1|&3Website&f:'
+        - '2|&bmyserver.net'
+        - '3|&8&m                       '
+        - '4|&3Name&f:'
+        - '5|&b%player%'
+        - '7|&3Rank&f:'
+        - '8|Rank: %group%'
+        - '10|&3World&f:'
+        - '11|&b%world%'
+        - '13|&3Time&f:'
+        - '14|&b%time%'
+        - '21|&3Teamspeak&f:'
+        - '22|&bts.myserver.net'
+        - '23|&8&m                       '
+        - '41|&3Store&f:'
+        - '42|&bshop.myserver.net'
+        - '43|&8&m                       '
+      groups:
+        staff:
+          condition: permission:tab.staff
+          slots:
+            - 24-40
+        players:
+          slots:
+            - 44-80
+
+# https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Ping-Spoof
+ping-spoof:
+  enabled: false
+  value: 0
+
+placeholders:
+  date-format: "dd.MM.yyyy"
+  time-format: "[HH:mm:ss / h:mm a]"
+  time-offset: 0
+  register-tab-expansion: false
+
+# https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Placeholder-output-replacements
+placeholder-output-replacements:
+  "%essentials_vanished%":
+    "yes": "&7| Vanished"
+    "no": ""
+
+# https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Conditional-placeholders
+conditions:
+  nick: # use it with %condition:nick%
+    conditions:
+      - "%player%=%essentials_nickname%"
+    yes: "%player%"
+    no: "~%essentials_nickname%"
+
+placeholderapi-refresh-intervals:
+  default-refresh-interval: 500
+  "%server_uptime%": 1000
+  "%server_tps_1_colored%": 1000
+  "%server_unique_joins%": 5000
+  "%player_health%": 200
+  "%player_ping%": 1000
+  "%vault_prefix%": 1000
+  "%rel_factionsuuid_relation_color%": 1000
+
+# assigning groups by permission nodes instead of taking them from permission plugin
+assign-groups-by-permissions: false
+
+# if the option above is true, all groups are taken based on permissions and the one higher in this list is used as primary
+# Warning! This is not sorting list and has nothing to do with sorting players in tablist!
+primary-group-finding-list:
+  - Owner
+  - Admin
+  - Mod
+  - Helper
+  - default
+
+# Refresh interval (in milliseconds) of:
+# - Permission checks in conditions / sorting
+# - Group retrieving from permission plugin for sorting / per-group properties
+# - Prefix/suffix placeholders taking data from permission plugin
+permission-refresh-interval: 1000
+
+# Unlocks extra console messages
+debug: false
+
+# https://github.com/NEZNAMY/TAB/wiki/MySQL
+mysql:
+  enabled: false
+  host: 127.0.0.1
+  port: 3306
+  database: tab
+  username: user
+  password: password
+  useSSL: true
+
+########################################################################
+# BUKKIT ONLY - THE FOLLOWING SECTION IS ONLY FOR BACKEND INSTALLATION #
+########################################################################
+
+# https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Per-world-playerlist
+per-world-playerlist:
+  enabled: false
+  # players with tab.staff will always see all players
+  allow-bypass-permission: false
+  # players in these worlds will always see all players
+  ignore-effect-in-worlds:
+    - ignoredworld
+    - build
+  shared-playerlist-world-groups:
+    lobby:
+      - lobby1
+      - lobby2
+    minigames:
+      - paintball
+      - bedwars
+
+compensate-for-packetevents-bug: false
+
+#####################################################################
+# PROXY ONLY - THE FOLLOWING SECTION IS ONLY FOR PROXY INSTALLATION #
+#####################################################################
+
+# https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Global-playerlist
+global-playerlist:
+  enabled: false
+  display-others-as-spectators: false
+  display-vanished-players-as-spectators: true
+  isolate-unlisted-servers: false
+  update-latency: false
+  spy-servers:
+    - spyserver1
+    - spyserver2
+  server-groups:
+    lobbies:
+      - lobby1
+      - lobby2
+    group2:
+      - server1
+      - server2
+
+# Take permissions and groups from backend server instead of proxy
+use-bukkit-permissions-manager: false
+
+# Sometimes server might be using offline uuids in tablist instead of online, such as disabling waterfall's tablist rewrite option
+# If you experience tablist formatting not working, toggle this option (set it to opposite value)
+# Only affects proxies with online mode enabled
+use-online-uuid-in-tablist: true
+
+# If enabled and RedisBungee plugin is found, hook is enabled to work with players on all proxies
+enable-redisbungee-support: true
+root@minecraft:~# 
+
+
+Config plugin LuckPerms 
+
+root@minecraft:~# cat /var/lib/pufferpanel/servers/5a36d5c9/plugins/LuckPerms/config.yml
+####################################################################################################
+# +----------------------------------------------------------------------------------------------+ #
+# |                                   __         __   ___  __         __                         | #
+# |                        |    |  | /  ` |__/  |__) |__  |__)  |\/| /__`                        | #
+# |                        |___ \__/ \__, |  \  |    |___ |  \  |  | .__/                        | #
+# |                                                                                              | #
+# |                                     https://luckperms.net                                    | #
+# |                                                                                              | #
+# |  WIKI:        https://luckperms.net/wiki                                                     | #
+# |  DISCORD:     https://discord.gg/luckperms                                                   | #
+# |  BUG REPORTS: https://github.com/LuckPerms/LuckPerms/issues                                  | #
+# |                                                                                              | #
+# |  Each option in this file is documented and explained here:                                  | #
+# |   ==>  https://luckperms.net/wiki/Configuration                                              | #
+# |                                                                                              | #
+# |  New options are not added to this file automatically. Default values are used if an         | #
+# |  option cannot be found. The latest config versions can be obtained at the link above.       | #
+# +----------------------------------------------------------------------------------------------+ #
+####################################################################################################
+
+# +----------------------------------------------------------------------------------------------+ #
+# |                                                                                              | #
+# |                                      ESSENTIAL SETTINGS                                      | #
+# |                                                                                              | #
+# |                   Important settings that control how LuckPerms functions.                   | #
+# |                                                                                              | #
+# +----------------------------------------------------------------------------------------------+ #
+
+# The name of the server, used for server specific permissions.
+#
+# - When set to "global" this setting is effectively ignored.
+# - In all other cases, the value here is added to all players in a "server" context.
+# - See: https://luckperms.net/wiki/Context
+server: global
+
+# If the servers own UUID cache/lookup facility should be used when there is no record for a player
+# already in LuckPerms.
+#
+# - When this is set to 'false', commands using a player's username will not work unless the player
+#   has joined since LuckPerms was first installed.
+# - To get around this, you can use a player's uuid directly in the command, or enable this option.
+# - When this is set to 'true', the server facility is used. This may use a number of methods,
+#   including checking the servers local cache, or making a request to the Mojang API.
+use-server-uuid-cache: false
+
+
+
+
+# +----------------------------------------------------------------------------------------------+ #
+# |                                                                                              | #
+# |                                       STORAGE SETTINGS                                       | #
+# |                                                                                              | #
+# |                Controls which storage method LuckPerms will use to store data.               | #
+# |                                                                                              | #
+# +----------------------------------------------------------------------------------------------+ #
+
+# How the plugin should store data
+#
+# - The various options are explained in more detail on the wiki:
+#   https://luckperms.net/wiki/Storage-types
+#
+# - Possible options:
+#
+#   |  Remote databases - require connection information to be configured below
+#   |=> MySQL
+#   |=> MariaDB (preferred over MySQL)
+#   |=> PostgreSQL
+#   |=> MongoDB
+#
+#   |  Flatfile/local database - don't require any extra configuration
+#   |=> H2 (preferred over SQLite)
+#   |=> SQLite
+#
+#   |  Readable & editable text files - don't require any extra configuration
+#   |=> YAML (.yml files)
+#   |=> JSON (.json files)
+#   |=> HOCON (.conf files)
+#   |=> TOML (.toml files)
+#   |
+#   | By default, user, group and track data is separated into different files. Data can be combined
+#   | and all stored in the same file by switching to a combined storage variant.
+#   | Just add '-combined' to the end of the storage-method, e.g. 'yaml-combined'
+#
+# - A H2 database is the default option.
+# - If you want to edit data manually in "traditional" storage files, we suggest using YAML.
+storage-method: h2
+
+# The following block defines the settings for remote database storage methods.
+#
+# - You don't need to touch any of the settings here if you're using a local storage method!
+# - The connection detail options are shared between all remote storage types.
+data:
+
+  # Define the address and port for the database.
+  # - The standard DB engine port is used by default
+  #   (MySQL: 3306, PostgreSQL: 5432, MongoDB: 27017)
+  # - Specify as "host:port" if differs
+  address: localhost
+
+  # The name of the database to store LuckPerms data in.
+  # - This must be created already. Don't worry about this setting if you're using MongoDB.
+  database: minecraft
+
+  # Credentials for the database.
+  username: root
+  password: ''
+
+  # These settings apply to the MySQL connection pool.
+  # - The default values will be suitable for the majority of users.
+  # - Do not change these settings unless you know what you're doing!
+  pool-settings:
+
+    # Sets the maximum size of the MySQL connection pool.
+    # - Basically this value will determine the maximum number of actual
+    #   connections to the database backend.
+    # - More information about determining the size of connection pools can be found here:
+    #   https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing
+    maximum-pool-size: 10
+
+    # Sets the minimum number of idle connections that the pool will try to maintain.
+    # - For maximum performance and responsiveness to spike demands, it is recommended to not set
+    #   this value and instead allow the pool to act as a fixed size connection pool.
+    #   (set this value to the same as 'maximum-pool-size')
+    minimum-idle: 10
+
+    # This setting controls the maximum lifetime of a connection in the pool in milliseconds.
+    # - The value should be at least 30 seconds less than any database or infrastructure imposed
+    #   connection time limit.
+    maximum-lifetime: 1800000 # 30 minutes
+
+    # This setting controls how frequently the pool will 'ping' a connection in order to prevent it
+    # from being timed out by the database or network infrastructure, measured in milliseconds.
+    # - The value should be less than maximum-lifetime and greater than 30000 (30 seconds).
+    # - Setting the value to zero will disable the keepalive functionality.
+    keepalive-time: 0
+
+    # This setting controls the maximum number of milliseconds that the plugin will wait for a
+    # connection from the pool, before timing out.
+    connection-timeout: 5000 # 5 seconds
+
+    # This setting allows you to define extra properties for connections.
+    #
+    # By default, the following options are set to enable utf8 encoding. (you may need to remove
+    # these if you are using PostgreSQL)
+    #   useUnicode: true
+    #   characterEncoding: utf8
+    #
+    # You can also use this section to disable SSL connections, by uncommenting the 'useSSL' and
+    # 'verifyServerCertificate' options below.
+    properties:
+      useUnicode: true
+      characterEncoding: utf8
+      #useSSL: false
+      #verifyServerCertificate: false
+
+  # The prefix for all LuckPerms SQL tables.
+  #
+  # - This only applies for remote SQL storage types (MySQL, MariaDB, etc).
+  # - Change this if you want to use different tables for different servers.
+  table-prefix: 'luckperms_'
+
+  # The prefix to use for all LuckPerms MongoDB collections.
+  #
+  # - This only applies for the MongoDB storage type.
+  # - Change this if you want to use different collections for different servers. The default is no
+  # prefix.
+  mongodb-collection-prefix: ''
+
+  # The connection string URI to use to connect to the MongoDB instance.
+  #
+  # - When configured, this setting will override anything defined in the address, database,
+  #   username or password fields above.
+  # - If you have a connection string that starts with 'mongodb://' or 'mongodb+srv://', enter it
+  #   below.
+  # - For more information, please see https://docs.mongodb.com/manual/reference/connection-string/
+  mongodb-connection-uri: ''
+
+# Define settings for a "split" storage setup.
+#
+# - This allows you to define a storage method for each type of data.
+# - The connection options above still have to be correct for each type here.
+split-storage:
+  # Don't touch this if you don't want to use split storage!
+  enabled: false
+  methods:
+    # These options don't need to be modified if split storage isn't enabled.
+    user: h2
+    group: h2
+    track: h2
+    uuid: h2
+    log: h2
+
+
+
+
+# +----------------------------------------------------------------------------------------------+ #
+# |                                                                                              | #
+# |                            UPDATE PROPAGATION & MESSAGING SERVICE                            | #
+# |                                                                                              | #
+# |    Controls the ways in which LuckPerms will sync data & notify other servers of changes.    | #
+# |     These options are documented on greater detail on the wiki under "Instant Updates".      | #
+# |                                                                                              | #
+# +----------------------------------------------------------------------------------------------+ #
+
+# This option controls how frequently LuckPerms will perform a sync task.
+#
+# - A sync task will refresh all data from the storage, and ensure that the most up-to-date data is
+#   being used by the plugin.
+# - This is disabled by default, as most users will not need it. However, if you're using a remote
+#   storage type without a messaging service setup, you may wish to set this to something like 3.
+# - Set to -1 to disable the task completely.
+sync-minutes: -1
+
+# If the file watcher should be enabled.
+#
+# - When using a file-based storage type, LuckPerms can monitor the data files for changes, and
+#   automatically update when changes are detected.
+# - If you don't want this feature to be active, set this option to false.
+watch-files: true
+
+# Define which messaging service should be used by the plugin.
+#
+# - If enabled and configured, LuckPerms will use the messaging service to inform other connected
+#   servers of changes.
+# - Use the command "/lp networksync" to manually push changes.
+# - Data is NOT stored using this service. It is only used as a messaging platform.
+#
+# - If you decide to enable this feature, you should set "sync-minutes" to -1, as there is no need
+#   for LuckPerms to poll the database for changes.
+#
+# - Possible options:
+#   => sql       Uses the SQL database to form a queue system for communication. Will only work when
+#                'storage-method' is set to MySQL or MariaDB. This is chosen by default if the
+#                option is set to 'auto' and SQL storage is in use. Set to 'notsql' to disable this.
+#   => pluginmsg Uses the plugin messaging channels to communicate with the proxy.
+#                LuckPerms must be installed on your proxy & all connected servers backend servers.
+#                Won't work if you have more than one proxy.
+#   => lilypad   Uses LilyPad pub-sub to push changes. You need to have the LilyPad-Connect plugin
+#                installed.
+#   => redis     Uses Redis pub-sub to push changes. Your server connection info must be configured
+#                below.
+#   => rabbitmq  Uses RabbitMQ pub-sub to push changes. Your server connection info must be
+#                configured below.
+#   => nats      Uses Nats pub-sub to push changes. Your server connection info must be
+#                configured below.
+#   => custom    Uses a messaging service provided using the LuckPerms API.
+#   => auto      Attempts to automatically setup a messaging service using redis or sql.
+messaging-service: auto
+
+# If LuckPerms should automatically push updates after a change has been made with a command.
+auto-push-updates: true
+
+# If LuckPerms should push logging entries to connected servers via the messaging service.
+push-log-entries: true
+
+# If LuckPerms should broadcast received logging entries to players on this platform.
+#
+# - If you have LuckPerms installed on your backend servers as well as a BungeeCord proxy, you
+#   should set this option to false on either your backends or your proxies, to avoid players being
+#   messaged twice about log entries.
+broadcast-received-log-entries: true
+
+# Settings for Redis.
+# Port 6379 is used by default; set address to "host:port" if differs
+# Multiple Redis nodes can be specified in the same format as a string list under the name "addresses".
+redis:
+  enabled: false
+  address: localhost
+  username: ''
+  password: ''
+
+# Settings for Nats.
+# Port 4222 is used by default; set address to "host:port" if differs
+nats:
+  enabled: false
+  address: localhost
+  username: ''
+  password: ''
+
+# Settings for RabbitMQ.
+# Port 5672 is used by default; set address to "host:port" if differs
+rabbitmq:
+  enabled: false
+  address: localhost
+  vhost: '/'
+  username: 'guest'
+  password: 'guest'
+
+
+
+
+# +----------------------------------------------------------------------------------------------+ #
+# |                                                                                              | #
+# |                                    CUSTOMIZATION SETTINGS                                    | #
+# |                                                                                              | #
+# |              Settings that allow admins to customize the way LuckPerms operates.             | #
+# |                                                                                              | #
+# +----------------------------------------------------------------------------------------------+ #
+
+# Controls how temporary permissions/parents/meta should be accumulated.
+#
+# - The default behaviour is "deny".
+# - This behaviour can also be specified when the command is executed. See the command usage
+#   documentation for more info.
+#
+# - Possible options:
+#   => accumulate   durations will be added to the existing expiry time
+#   => replace      durations will be replaced if the new duration is later than the current
+#                   expiration
+#   => deny         the command will just fail if you try to add another node with the same expiry
+temporary-add-behaviour: deny
+
+# Controls how LuckPerms will determine a users "primary" group.
+#
+# - The meaning and influence of "primary groups" are explained in detail on the wiki.
+# - The preferred approach is to let LuckPerms automatically determine a users primary group
+#   based on the relative weight of their parent groups.
+#
+# - Possible options:
+#   => stored                  use the value stored against the users record in the file/database
+#   => parents-by-weight       just use the users most highly weighted parent
+#   => all-parents-by-weight   same as above, but calculates based upon all parents inherited from
+#                              both directly and indirectly
+primary-group-calculation: parents-by-weight
+
+# If the plugin should check for "extra" permissions with users run LP commands.
+#
+# - These extra permissions allow finer control over what users can do with each command, and who
+#   they have access to edit.
+# - The nature of the checks are documented on the wiki under "Argument based command permissions".
+# - Argument based permissions are *not* static, unlike the 'base' permissions, and will depend upon
+#   the arguments given within the command.
+argument-based-command-permissions: false
+
+# If the plugin should check whether senders are a member of a given group before they're able to
+# edit the groups data or add/remove other users to/from it.
+# Note: these limitations do not apply to the web editor!
+require-sender-group-membership-to-modify: false
+
+# If the plugin should send log notifications to users whenever permissions are modified.
+#
+# - Notifications are only sent to those with the appropriate permission to receive them
+# - They can also be temporarily enabled/disabled on a per-user basis using
+#   '/lp log notify <on|off>'
+log-notify: true
+
+# Defines a list of log entries which should not be sent as notifications to users.
+#
+# - Each entry in the list is a RegEx expression which is matched against the log entry description.
+log-notify-filtered-descriptions:
+#  - "parent add example"
+
+# If LuckPerms should automatically install translation bundles and periodically update them.
+auto-install-translations: true
+
+# Defines the options for prefix and suffix stacking.
+#
+# - The feature allows you to display multiple prefixes or suffixes alongside a players username in
+#   chat.
+# - It is explained and documented in more detail on the wiki under "Prefix & Suffix Stacking".
+#
+# - The options are divided into separate sections for prefixes and suffixes.
+# - The 'duplicates' setting refers to how duplicate elements are handled. Can be 'retain-all',
+#   'first-only' or 'last-only'.
+# - The value of 'start-spacer' is included at the start of the resultant prefix/suffix.
+# - The value of 'end-spacer' is included at the end of the resultant prefix/suffix.
+# - The value of 'middle-spacer' is included between each element in the resultant prefix/suffix.
+#
+# - Possible format options:
+#   => highest                        Selects the value with the highest weight, from all values
+#                                     held by or inherited by the player.
+#
+#   => lowest                         Same as above, except takes the one with the lowest weight.
+#
+#   => highest_own                    Selects the value with the highest weight, but will not
+#                                     accept any inherited values.
+#
+#   => lowest_own                     Same as above, except takes the value with the lowest weight.
+#
+#   => highest_inherited              Selects the value with the highest weight, but will only
+#                                     accept inherited values.
+#
+#   => lowest_inherited               Same as above, except takes the value with the lowest weight.
+#
+#   => highest_on_track_<track>       Selects the value with the highest weight, but only if the
+#                                     value was inherited from a group on the given track.
+#
+#   => lowest_on_track_<track>        Same as above, except takes the value with the lowest weight.
+#
+#   => highest_not_on_track_<track>   Selects the value with the highest weight, but only if the
+#                                     value was inherited from a group not on the given track.
+#
+#   => lowest_not_on_track_<track>    Same as above, except takes the value with the lowest weight.
+#
+#   => highest_from_group_<group>     Selects the value with the highest weight, but only if the
+#                                     value was inherited from the given group.
+#
+#   => lowest_from_group_<group>      Same as above, except takes the value with the lowest weight.
+#
+#   => highest_not_from_group_<group> Selects the value with the highest weight, but only if the
+#                                     value was not inherited from the given group.
+#
+#   => lowest_not_from_group_<group>  Same as above, except takes the value with the lowest weight.
+meta-formatting:
+  prefix:
+    format:
+      - "highest"
+    duplicates: first-only
+    start-spacer: ""
+    middle-spacer: " "
+    end-spacer: ""
+  suffix:
+    format:
+      - "highest"
+    duplicates: first-only
+    start-spacer: ""
+    middle-spacer: " "
+    end-spacer: ""
+
+
+
+
+# +----------------------------------------------------------------------------------------------+ #
+# |                                                                                              | #
+# |                            PERMISSION CALCULATION AND INHERITANCE                            | #
+# |                                                                                              | #
+# |    Modify the way permission checks, meta lookups and inheritance resolutions are handled.   | #
+# |                                                                                              | #
+# +----------------------------------------------------------------------------------------------+ #
+
+# The algorithm LuckPerms should use when traversing the "inheritance tree".
+#
+# - Possible options:
+#   => breadth-first            See: https://en.wikipedia.org/wiki/Breadth-first_search
+#   => depth-first-pre-order    See: https://en.wikipedia.org/wiki/Depth-first_search
+#   => depth-first-post-order   See: https://en.wikipedia.org/wiki/Depth-first_search
+inheritance-traversal-algorithm: depth-first-pre-order
+
+# If a final sort according to "inheritance rules" should be performed after the traversal algorithm
+# has resolved the inheritance tree.
+#
+# "Inheritance rules" refers to things such as group weightings, primary group status, and the
+# natural contextual ordering of the group nodes.
+#
+# Setting this to 'true' will allow for the inheritance rules to take priority over the structure of
+# the inheritance tree.
+#
+# Effectively when this setting is 'true': the tree is flattened, and rules applied afterwards,
+# and when this setting is 'false':, the rules are just applied during each step of the traversal.
+post-traversal-inheritance-sort: false
+
+# Defines the mode used to determine whether a set of contexts are satisfied.
+#
+# - Possible options:
+#   => at-least-one-value-per-key   Set A will be satisfied by another set B, if at least one of the
+#                                   key-value entries per key in A are also in B.
+#   => all-values-per-key           Set A will be satisfied by another set B, if all key-value
+#                                   entries in A are also in B.
+context-satisfy-mode: at-least-one-value-per-key
+
+# LuckPerms has a number of built-in contexts. These can be disabled by adding the context key to
+# the list below.
+disabled-contexts:
+#  - "world"
+
+# +----------------------------------------------------------------------------------------------+ #
+# | Permission resolution settings                                                               | #
+# +----------------------------------------------------------------------------------------------+ #
+
+# If users on this server should have their global permissions applied.
+# When set to false, only server specific permissions will apply for users on this server
+include-global: true
+
+# If users on this server should have their global world permissions applied.
+# When set to false, only world specific permissions will apply for users on this server
+include-global-world: true
+
+# If users on this server should have global (non-server specific) groups applied
+apply-global-groups: true
+
+# If users on this server should have global (non-world specific) groups applied
+apply-global-world-groups: true
+
+# +----------------------------------------------------------------------------------------------+ #
+# | Meta lookup settings                                                                         | #
+# +----------------------------------------------------------------------------------------------+ #
+
+# Defines how meta values should be selected.
+#
+# - Possible options:
+#   => inheritance      Selects the meta value that was inherited first
+#   => highest-number   Selects the highest numerical meta value
+#   => lowest-number    Selects the lowest numerical meta value
+meta-value-selection-default: inheritance
+
+# Defines how meta values should be selected per key.
+meta-value-selection:
+#  max-homes: highest-number
+
+# +----------------------------------------------------------------------------------------------+ #
+# | Inheritance settings                                                                         | #
+# +----------------------------------------------------------------------------------------------+ #
+
+# If the plugin should apply wildcard permissions.
+#
+# - If set to true, LuckPerms will detect wildcard permissions, and resolve & apply all registered
+#   permissions matching the wildcard.
+apply-wildcards: true
+
+# If LuckPerms should resolve and apply permissions according to the Sponge style implicit wildcard
+# inheritance system.
+#
+# - That being: If a user has been granted "example", then the player should have also be
+#   automatically granted "example.function", "example.another", "example.deeper.nesting",
+#   and so on.
+apply-sponge-implicit-wildcards: false
+
+# If the plugin should apply negated Bukkit default permissions before it considers wildcard
+# assignments.
+#
+# - Plugin authors can define permissions which explicitly should not be given automatically to OPs.
+#   This is usually used for so called "anti-permissions" - permissions which, when granted, apply
+#   something negative.
+# - If this option is set to true, LuckPerms will consider any negated declarations made by
+#   plugins before it considers wildcards. (similar to the way the OP system works)
+# - If this option is set to false, LuckPerms will consider any wildcard assignments first.
+apply-default-negated-permissions-before-wildcards: false
+
+# If the plugin should parse regex permissions.
+#
+# - If set to true, LuckPerms will detect regex permissions, marked with "r=" at the start of the
+#   node, and resolve & apply all registered permissions matching the regex.
+apply-regex: true
+
+# If the plugin should complete and apply shorthand permissions.
+#
+# - If set to true, LuckPerms will detect and expand shorthand node patterns.
+apply-shorthand: true
+
+# If the plugin should apply Bukkit child permissions.
+#
+# - Plugin authors can define custom permissions structures for their plugin, which will be resolved
+#   and used by LuckPerms if this setting is enabled.
+apply-bukkit-child-permissions: true
+
+# If the plugin should apply Bukkit default permissions.
+#
+# - Plugin authors can define permissions which should be given to all users by default, or setup
+#   permissions which should/shouldn't be given to opped players.
+# - If this option is set to false, LuckPerms will ignore these defaults.
+apply-bukkit-default-permissions: true
+
+# If the plugin should apply attachment permissions.
+#
+# - Other plugins on the server are able to add their own "permission attachments" to players.
+# - This allows them to grant players additional permissions which last until the end of the
+#   session, or until they're removed.
+# - If this option is set to false, LuckPerms will not include these attachment permissions when
+#   considering if a player should have access to a certain permission.
+apply-bukkit-attachment-permissions: true
+
+# +----------------------------------------------------------------------------------------------+ #
+# | Extra settings                                                                               | #
+# +----------------------------------------------------------------------------------------------+ #
+
+# A list of context calculators which will be skipped when calculating contexts.
+#
+# - You can disable context calculators by either:
+#   => specifying the Java class name used by the calculator (e.g. com.example.ExampleCalculator)
+#   => specifying a sub-section of the Java package used by the calculator (e.g. com.example)
+disabled-context-calculators: []
+
+# Allows you to set "aliases" for the worlds sent forward for context calculation.
+#
+# - These aliases are provided in addition to the real world name. Applied recursively.
+# - Remove the comment characters for the default aliases to apply.
+world-rewrite:
+#  world_nether: world
+#  world_the_end: world
+
+# Define special group weights for this server.
+#
+# - Group weights can also be applied directly to group data, using the setweight command.
+# - This section allows weights to be set on a per-server basis.
+group-weight:
+#  admin: 10
+
+
+
+
+# +----------------------------------------------------------------------------------------------+ #
+# |                                                                                              | #
+# |                                      FINE TUNING OPTIONS                                     | #
+# |                                                                                              | #
+# |     A number of more niche settings for tweaking and changing behaviour. The section also    | #
+# | contains toggles for some more specialised features. It is only necessary to make changes to | #
+# |                  these options if you want to fine-tune LuckPerms behaviour.                 | #
+# |                                                                                              | #
+# +----------------------------------------------------------------------------------------------+ #
+
+# +----------------------------------------------------------------------------------------------+ #
+# | Server Operator (OP) settings                                                                | #
+# +----------------------------------------------------------------------------------------------+ #
+
+# Controls whether server operators should exist at all.
+#
+# - When set to 'false', all players will be de-opped, and the /op and /deop commands will be
+#   disabled. Note that vanilla features like the spawn-protection require an operator on the
+#   server to work.
+enable-ops: true
+
+# Enables or disables a special permission based system in LuckPerms for controlling OP status.
+#
+# - If set to true, any user with the permission "luckperms.autoop" will automatically be granted
+#   server operator status. This permission can be inherited, or set on specific servers/worlds,
+#   temporarily, etc.
+# - Additionally, setting this to true will force the "enable-ops" option above to false. All users
+#   will be de-opped unless they have the permission node, and the op/deop commands will be
+#   disabled.
+# - It is recommended that you use this option instead of assigning a single '*' permission.
+auto-op: false
+
+# Defines if "opped" players should be able to use all LuckPerms commands by default.
+#
+# - Set to false to only allow users who have the permissions access to the commands
+commands-allow-op: true
+
+# +----------------------------------------------------------------------------------------------+ #
+# | Vault integration settings                                                                   | #
+# +----------------------------------------------------------------------------------------------+ #
+
+# If Vault lookups for offline players on the main server thread should be enabled.
+#
+# LuckPerms has a "catch" for plugins attempting to perform unsafe offline player data lookups
+# from the main server thread. This catch raises an exception (causes an error to occur) when unsafe
+# lookups are made, instead of allowing the lookup to happen, which would likely cause the server
+# to lag.
+#
+# However, if you're willing to accept the consequences, the catch can be disabled by setting this
+# option to 'true.
+vault-unsafe-lookups: false
+
+# If LuckPerms should use the 'display name' of a group when returning groups in Vault API calls.
+#
+# - When this option is set to true, the display name of the group is returned.
+# - When this option is set to false, the standard name/id of the group is returned.
+vault-group-use-displaynames: true
+
+# Controls which group LuckPerms should use for NPC players when handling Vault requests.
+#
+# - As NPCs aren't actually real players, LuckPerms does not load any user data for them. This
+#   becomes an issue when plugins want to check for their permissions using Vault.
+# - As a solution, Vault checks for NPCs fallback to a group, which is defined below.
+vault-npc-group: default
+
+# Controls how LuckPerms should consider the OP status of NPC players when handing Vault requests.
+#
+# - If you want NPCs to have the same permissions as "normal" players, set this option to false.
+# - If you want NPCs to have OP status, set this option to true.
+vault-npc-op-status: false
+
+# If the vault-server option below should be used.
+#
+# - When this option is set to false, the server value defined above under "server" is used.
+use-vault-server: false
+
+# The name of the server used within Vault operations.
+#
+# - If you don't want Vault operations to be server specific, set this to "global".
+# - Will only take effect if use-vault-server is set to true above.
+vault-server: global
+
+# If global permissions should be considered when retrieving meta or player groups
+vault-include-global: true
+
+# If Vault operations should ignore any world arguments if supplied.
+vault-ignore-world: false
+
+# +----------------------------------------------------------------------------------------------+ #
+# | Miscellaneous (and rarely used) settings                                                     | #
+# +----------------------------------------------------------------------------------------------+ #
+
+# If LuckPerms should produce extra logging output when it handles logins.
+#
+# - Useful if you're having issues with UUID forwarding or data not being loaded.
+debug-logins: false
+
+# If LuckPerms should allow usernames with non alphanumeric characters.
+#
+# - Note that due to the design of the storage implementation, usernames must still be 16 characters
+#   or less.
+allow-invalid-usernames: false
+
+# If LuckPerms should not require users to confirm bulkupdate operations.
+#
+# - When set to true, operations will be executed immediately.
+# - This is not recommended, as bulkupdate has the potential to irreversibly delete large amounts of
+#   data, and is not designed to be executed automatically.
+# - If automation is needed, users should prefer using the LuckPerms API.
+skip-bulkupdate-confirmation: false
+
+# If LuckPerms should prevent bulkupdate operations.
+#
+# - When set to true, bulkupdate operations (the /lp bulkupdate command) will not work.
+# - When set to false, bulkupdate operations will be allowed via the console.
+disable-bulkupdate: false
+
+# If LuckPerms should allow a users primary group to be removed with the 'parent remove' command.
+#
+# - When this happens, the plugin will set their primary group back to default.
+prevent-primary-group-removal: false
+
+# If LuckPerms should update the list of commands sent to the client when permissions are changed.
+update-client-command-list: true
+
+# If LuckPerms should attempt to register "Brigadier" command list data for its commands.
+register-command-list-data: true
+
+# If LuckPerms should attempt to resolve Vanilla command target selectors for LP commands.
+# See here for more info: https://minecraft.wiki/w/Target_selectors
+resolve-command-selectors: false
+
+# If the plugin should run in "read-only" mode for commands.
+#
+# In this mode, players or the console will only be able to execute commands that read or view
+# data, and will not be able to execute any LP commands that modify data.
+#
+# If enabling read-only mode for just players, be aware that some other plugins may allow players
+# to execute commands as the console, allowing them to run LP commands indirectly.
+#
+# Note: This does not affect interactions with LuckPerms via the API.
+commands-read-only-mode:
+  players: false
+  console: false
+
+# If LuckPerms commands should be disabled. When true, this will prevent all LP commands from being
+# executed. In a sense this is a more extreme version of read-only mode (see above).
+#
+# LuckPerms will still act as the permission manager, but server administrators will be unable to
+# make changes via commands.
+#
+# If disabling commands just for players, be aware that some other plugins may allow players to
+# execute commands as the console, allowing them to run commands indirectly.
+#
+# If commands are disabled for both players and the console, LuckPerms will not attempt to register
+# a command with the server at all & in a sense will be invisible to both players and admins.
+#
+# Note: This does not affect interactions with LuckPerms via the API.
+disable-luckperms-commands:
+  players: false
+  console: false
+root@minecraft:~#
+
+Config principal NamelessMC 
+root@minecraft:~# cat /var/www/html/core/config.php
+<?php
+
+return [
+  'mysql' => [
+    'host' => '127.0.0.1',
+    'port' => '3306',
+    'username' => 'nameless',
+    'password' => 'Hostify2024',
+    'db' => 'hostify',
+    'charset' => 'utf8mb4',
+    'collation' => 'utf8mb4_unicode_ci',
+    'initialise_charset' => true,
+    'initialise_collation' => true,
+  ],
+  'remember' => [
+    'cookie_name' => 'nl2',
+    'cookie_expiry' => 2629800,
+  ],
+  'session' => [
+    'session_name' => '2user',
+    'admin_name' => '2admin',
+    'token_name' => '2token',
+  ],
+  'core' => [
+    'hostname' => 'hostify.nuloapp.com',
+    'path' => '',
+    'friendly' => false,
+    'force_https' => false,
+    'force_www' => false,
+    'captcha' => false,
+    'date_format' => 'd M Y, H:i',
+    'trustedProxies' => NULL,
+    'installed' => true,
+  ],
+  'email' => [
+    'email' => 'noreply@nuloapp.com',
+    'username' => '',
+    'password' => '',
+    'name' => '',
+    'host' => '',
+    'port' => 587,
+  ],
+];
+
+VirtualHost de Apache 
+root@minecraft:~# cat /etc/apache2/sites-available/000-default.conf
+<VirtualHost *:80>
+<Directory /var/www/html>
+    AllowOverride All
+</Directory>
+        # The ServerName directive sets the request scheme, hostname and port that
+        # the server uses to identify itself. This is used when creating
+        # redirection URLs. In the context of virtual hosts, the ServerName
+        # specifies what hostname must appear in the request's Host: header to
+        # match this virtual host. For the default virtual host (this file) this
+        # value is not decisive as it is used as a last resort host regardless.
+        # However, you must set it for any further virtual host explicitly.
+        #ServerName www.example.com
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/html
+
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+        # error, crit, alert, emerg.
+        # It is also possible to configure the loglevel for particular
+        # modules, e.g.
+        #LogLevel info ssl:warn
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+        # For most configuration files from conf-available/, which are
+        # enabled or disabled at a global level, it is possible to
+        # include a line for only one particular virtual host. For example the
+        # following line enables the CGI configuration for this host only
+        # after it has been globally disabled with "a2disconf".
+        #Include conf-available/serve-cgi-bin.conf
+</VirtualHost>
+
+Config PHP 
+; otherwise it results in segfault when unloading after using SASL.
+; See https://github.com/php/php-src/issues/8620 for more info.
+;extension=ldap
+
+;extension=curl
+;extension=ffi
+;extension=ftp
+;extension=fileinfo
+;extension=gd
+;extension=gettext
+;extension=gmp
+;extension=intl
+;extension=imap
+;extension=mbstring
+;extension=exif      ; Must be after mbstring as it depends on it
+;extension=mysqli
+;extension=oci8_12c  ; Use with Oracle Database 12c Instant Client
+;extension=oci8_19  ; Use with Oracle Database 19 Instant Client
+;extension=odbc
+;extension=openssl
+;extension=pdo_firebird
+;extension=pdo_mysql
+;extension=pdo_oci
+;extension=pdo_odbc
+;extension=pdo_pgsql
+;extension=pdo_sqlite
+;extension=pgsql
+;extension=shmop
+
+; The MIBS data available in the PHP distribution must be installed.
+; See https://www.php.net/manual/en/snmp.installation.php
+;extension=snmp
+
+;extension=soap
+;extension=sockets
+;extension=sodium
+;extension=sqlite3
+;extension=tidy
+;extension=xsl
+;extension=zip
+
+;zend_extension=opcache
+
+;;;;;;;;;;;;;;;;;;;
+; Module Settings ;
+;;;;;;;;;;;;;;;;;;;
+
+[CLI Server]
+; Whether the CLI web server uses ANSI color coding in its terminal output.
+cli_server.color = On
+
+[Date]
+; Defines the default timezone used by the date functions
+; https://php.net/date.timezone
+;date.timezone =
+
+; https://php.net/date.default-latitude
+;date.default_latitude = 31.7667
+
+; https://php.net/date.default-longitude
+;date.default_longitude = 35.2333
+
+; https://php.net/date.sunrise-zenith
+;date.sunrise_zenith = 90.833333
+
+; https://php.net/date.sunset-zenith
+;date.sunset_zenith = 90.833333
+
+[filter]
+; https://php.net/filter.default
+;filter.default = unsafe_raw
+
+; https://php.net/filter.default-flags
+;filter.default_flags =
+
+[iconv]
+; Use of this INI entry is deprecated, use global input_encoding instead.
+; If empty, default_charset or input_encoding or iconv.input_encoding is used.
+; The precedence is: default_charset < input_encoding < iconv.input_encoding
+;iconv.input_encoding =
+
+; Use of this INI entry is deprecated, use global internal_encoding instead.
+; If empty, default_charset or internal_encoding or iconv.internal_encoding is used.
+; The precedence is: default_charset < internal_encoding < iconv.internal_encoding
+;iconv.internal_encoding =
+
+; Use of this INI entry is deprecated, use global output_encoding instead.
+; If empty, default_charset or output_encoding or iconv.output_encoding is used.
+; The precedence is: default_charset < output_encoding < iconv.output_encoding
+; To use an output encoding conversion, iconv's output handler must be set
+; otherwise output encoding conversion cannot be performed.
+;iconv.output_encoding =
+
+[imap]
+; rsh/ssh logins are disabled by default. Use this INI entry if you want to
+; enable them. Note that the IMAP library does not filter mailbox names before
+; passing them to rsh/ssh command, thus passing untrusted data to this function
+; with rsh/ssh enabled is insecure.
+;imap.enable_insecure_rsh=0
+
+[intl]
+;intl.default_locale =
+; This directive allows you to produce PHP errors when some error
+; happens within intl functions. The value is the level of the error produced.
+; Default is 0, which does not produce any errors.
+;intl.error_level = E_WARNING
+;intl.use_exceptions = 0
+
+[sqlite3]
+; Directory pointing to SQLite3 extensions
+; https://php.net/sqlite3.extension-dir
+;sqlite3.extension_dir =
+
+; SQLite defensive mode flag (only available from SQLite 3.26+)
+; When the defensive flag is enabled, language features that allow ordinary
+; SQL to deliberately corrupt the database file are disabled. This forbids
+; writing directly to the schema, shadow tables (eg. FTS data tables), or
+; the sqlite_dbpage virtual table.
+; https://www.sqlite.org/c3ref/c_dbconfig_defensive.html
+; (for older SQLite versions, this flag has no use)
+;sqlite3.defensive = 1
+
+[Pcre]
+; PCRE library backtracking limit.
+; https://php.net/pcre.backtrack-limit
+;pcre.backtrack_limit=100000
+
+; PCRE library recursion limit.
+; Please note that if you set this value to a high number you may consume all
+; the available process stack and eventually crash PHP (due to reaching the
+; stack size limit imposed by the Operating System).
+; https://php.net/pcre.recursion-limit
+;pcre.recursion_limit=100000
+
+; Enables or disables JIT compilation of patterns. This requires the PCRE
+; library to be compiled with JIT support.
+;pcre.jit=1
+
+[Pdo]
+; Whether to pool ODBC connections. Can be one of "strict", "relaxed" or "off"
+; https://php.net/pdo-odbc.connection-pooling
+;pdo_odbc.connection_pooling=strict
+
+[Pdo_mysql]
+; Default socket name for local MySQL connects.  If empty, uses the built-in
+; MySQL defaults.
+pdo_mysql.default_socket=
+
+[Phar]
+; https://php.net/phar.readonly
+;phar.readonly = On
+
+; https://php.net/phar.require-hash
+;phar.require_hash = On
+
+;phar.cache_list =
+
+[mail function]
+; For Win32 only.
+; https://php.net/smtp
+SMTP = localhost
+; https://php.net/smtp-port
+smtp_port = 25
+
+; For Win32 only.
+; https://php.net/sendmail-from
+;sendmail_from = me@example.com
+
+; For Unix only.  You may supply arguments as well (default: "sendmail -t -i").
+; https://php.net/sendmail-path
+;sendmail_path =
+
+; Force the addition of the specified parameters to be passed as extra parameters
+; to the sendmail binary. These parameters will always replace the value of
+; the 5th parameter to mail().
+;mail.force_extra_parameters =
+
+; Add X-PHP-Originating-Script: that will include uid of the script followed by the filename
+mail.add_x_header = Off
+
+; Use mixed LF and CRLF line separators to keep compatibility with some
+; RFC 2822 non conformant MTA.
+mail.mixed_lf_and_crlf = Off
+
+; The path to a log file that will log all mail() calls. Log entries include
+; the full path of the script, line number, To address and headers.
+;mail.log =
+; Log mail to syslog (Event Log on Windows).
+;mail.log = syslog
+
+[ODBC]
+; https://php.net/odbc.default-db
+;odbc.default_db    =  Not yet implemented
+
+; https://php.net/odbc.default-user
+;odbc.default_user  =  Not yet implemented
+
+; https://php.net/odbc.default-pw
+;odbc.default_pw    =  Not yet implemented
+
+; Controls the ODBC cursor model.
+; Default: SQL_CURSOR_STATIC (default).
+;odbc.default_cursortype
+
+; Allow or prevent persistent links.
+; https://php.net/odbc.allow-persistent
+odbc.allow_persistent = On
+
+; Check that a connection is still valid before reuse.
+; https://php.net/odbc.check-persistent
+odbc.check_persistent = On
+
+; Maximum number of persistent links.  -1 means no limit.
+; https://php.net/odbc.max-persistent
+odbc.max_persistent = -1
+
+; Maximum number of links (persistent + non-persistent).  -1 means no limit.
+; https://php.net/odbc.max-links
+odbc.max_links = -1
+
+; Handling of LONG fields.  Returns number of bytes to variables.  0 means
+; passthru.
+; https://php.net/odbc.defaultlrl
+odbc.defaultlrl = 4096
+
+; Handling of binary data.  0 means passthru, 1 return as is, 2 convert to char.
+; See the documentation on odbc_binmode and odbc_longreadlen for an explanation
+; of odbc.defaultlrl and odbc.defaultbinmode
+; https://php.net/odbc.defaultbinmode
+odbc.defaultbinmode = 1
+
+[MySQLi]
+
+; Maximum number of persistent links.  -1 means no limit.
+; https://php.net/mysqli.max-persistent
+mysqli.max_persistent = -1
+
+; Allow accessing, from PHP's perspective, local files with LOAD DATA statements
+; https://php.net/mysqli.allow_local_infile
+;mysqli.allow_local_infile = On
+
+; It allows the user to specify a folder where files that can be sent via LOAD DATA
+; LOCAL can exist. It is ignored if mysqli.allow_local_infile is enabled.
+;mysqli.local_infile_directory =
+
+; Allow or prevent persistent links.
+; https://php.net/mysqli.allow-persistent
+mysqli.allow_persistent = On
+
+; Maximum number of links.  -1 means no limit.
+; https://php.net/mysqli.max-links
+mysqli.max_links = -1
+
+; Default port number for mysqli_connect().  If unset, mysqli_connect() will use
+; the $MYSQL_TCP_PORT or the mysql-tcp entry in /etc/services or the
+; compile-time value defined MYSQL_PORT (in that order).  Win32 will only look
+; at MYSQL_PORT.
+; https://php.net/mysqli.default-port
+mysqli.default_port = 3306
+
+; Default socket name for local MySQL connects.  If empty, uses the built-in
+; MySQL defaults.
+; https://php.net/mysqli.default-socket
+mysqli.default_socket =
+
+; Default host for mysqli_connect() (doesn't apply in safe mode).
+; https://php.net/mysqli.default-host
+mysqli.default_host =
+
+; Default user for mysqli_connect() (doesn't apply in safe mode).
+; https://php.net/mysqli.default-user
+mysqli.default_user =
+
+; Default password for mysqli_connect() (doesn't apply in safe mode).
+; Note that this is generally a *bad* idea to store passwords in this file.
+; *Any* user with PHP access can run 'echo get_cfg_var("mysqli.default_pw")
+; and reveal this password!  And of course, any users with read access to this
+; file will be able to reveal the password as well.
+; https://php.net/mysqli.default-pw
+mysqli.default_pw =
+
+; If this option is enabled, closing a persistent connection will rollback
+; any pending transactions of this connection, before it is put back
+; into the persistent connection pool.
+;mysqli.rollback_on_cached_plink = Off
+
+[mysqlnd]
+; Enable / Disable collection of general statistics by mysqlnd which can be
+; used to tune and monitor MySQL operations.
+mysqlnd.collect_statistics = On
+
+; Enable / Disable collection of memory usage statistics by mysqlnd which can be
+; used to tune and monitor MySQL operations.
+mysqlnd.collect_memory_statistics = Off
+
+; Records communication from all extensions using mysqlnd to the specified log
+; file.
+; https://php.net/mysqlnd.debug
+;mysqlnd.debug =
+
+; Defines which queries will be logged.
+;mysqlnd.log_mask = 0
+
+; Default size of the mysqlnd memory pool, which is used by result sets.
+;mysqlnd.mempool_default_size = 16000
+
+; Size of a pre-allocated buffer used when sending commands to MySQL in bytes.
+;mysqlnd.net_cmd_buffer_size = 2048
+
+; Size of a pre-allocated buffer used for reading data sent by the server in
+; bytes.
+;mysqlnd.net_read_buffer_size = 32768
+
+; Timeout for network requests in seconds.
+;mysqlnd.net_read_timeout = 31536000
+
+; SHA-256 Authentication Plugin related. File with the MySQL server public RSA
+; key.
+;mysqlnd.sha256_server_public_key =
+
+[OCI8]
+
+; Connection: Enables privileged connections using external
+; credentials (OCI_SYSOPER, OCI_SYSDBA)
+; https://php.net/oci8.privileged-connect
+;oci8.privileged_connect = Off
+
+; Connection: The maximum number of persistent OCI8 connections per
+; process. Using -1 means no limit.
+; https://php.net/oci8.max-persistent
+;oci8.max_persistent = -1
+
+; Connection: The maximum number of seconds a process is allowed to
+; maintain an idle persistent connection. Using -1 means idle
+; persistent connections will be maintained forever.
+; https://php.net/oci8.persistent-timeout
+;oci8.persistent_timeout = -1
+
+; Connection: The number of seconds that must pass before issuing a
+; ping during oci_pconnect() to check the connection validity. When
+; set to 0, each oci_pconnect() will cause a ping. Using -1 disables
+; pings completely.
+; https://php.net/oci8.ping-interval
+;oci8.ping_interval = 60
+
+; Connection: Set this to a user chosen connection class to be used
+; for all pooled server requests with Oracle Database Resident
+; Connection Pooling (DRCP).  To use DRCP, this value should be set to
+; the same string for all web servers running the same application,
+; the database pool must be configured, and the connection string must
+; specify to use a pooled server.
+;oci8.connection_class =
+
+; High Availability: Using On lets PHP receive Fast Application
+; Notification (FAN) events generated when a database node fails. The
+; database must also be configured to post FAN events.
+;oci8.events = Off
+
+; Tuning: This option enables statement caching, and specifies how
+; many statements to cache. Using 0 disables statement caching.
+; https://php.net/oci8.statement-cache-size
+;oci8.statement_cache_size = 20
+
+; Tuning: Enables row prefetching and sets the default number of
+; rows that will be fetched automatically after statement execution.
+; https://php.net/oci8.default-prefetch
+;oci8.default_prefetch = 100
+
+; Tuning: Sets the amount of LOB data that is internally returned from
+; Oracle Database when an Oracle LOB locator is initially retrieved as
+; part of a query. Setting this can improve performance by reducing
+; round-trips.
+; https://php.net/oci8.prefetch-lob-size
+; oci8.prefetch_lob_size = 0
+
+; Compatibility. Using On means oci_close() will not close
+; oci_connect() and oci_new_connect() connections.
+; https://php.net/oci8.old-oci-close-semantics
+;oci8.old_oci_close_semantics = Off
+
+[PostgreSQL]
+; Allow or prevent persistent links.
+; https://php.net/pgsql.allow-persistent
+pgsql.allow_persistent = On
+
+; Detect broken persistent links always with pg_pconnect().
+; Auto reset feature requires a little overheads.
+; https://php.net/pgsql.auto-reset-persistent
+pgsql.auto_reset_persistent = Off
+
+; Maximum number of persistent links.  -1 means no limit.
+; https://php.net/pgsql.max-persistent
+pgsql.max_persistent = -1
+
+; Maximum number of links (persistent+non persistent).  -1 means no limit.
+; https://php.net/pgsql.max-links
+pgsql.max_links = -1
+
+; Ignore PostgreSQL backends Notice message or not.
+; Notice message logging require a little overheads.
+; https://php.net/pgsql.ignore-notice
+pgsql.ignore_notice = 0
+
+; Log PostgreSQL backends Notice message or not.
+; Unless pgsql.ignore_notice=0, module cannot log notice message.
+; https://php.net/pgsql.log-notice
+pgsql.log_notice = 0
+
+[bcmath]
+; Number of decimal digits for all bcmath functions.
+; https://php.net/bcmath.scale
+bcmath.scale = 0
+
+[browscap]
+; https://php.net/browscap
+;browscap = extra/browscap.ini
+
+[Session]
+; Handler used to store/retrieve data.
+; https://php.net/session.save-handler
+session.save_handler = files
+
+; Argument passed to save_handler.  In the case of files, this is the path
+; where data files are stored. Note: Windows users have to change this
+; variable in order to use PHP's session functions.
+;
+; The path can be defined as:
+;
+;     session.save_path = "N;/path"
+;
+; where N is an integer.  Instead of storing all the session files in
+; /path, what this will do is use subdirectories N-levels deep, and
+; store the session data in those directories.  This is useful if
+; your OS has problems with many files in one directory, and is
+; a more efficient layout for servers that handle many sessions.
+;
+; NOTE 1: PHP will not create this directory structure automatically.
+;         You can use the script in the ext/session dir for that purpose.
+; NOTE 2: See the section on garbage collection below if you choose to
+;         use subdirectories for session storage
+;
+; The file storage module creates files using mode 600 by default.
+; You can change that by using
+;
+;     session.save_path = "N;MODE;/path"
+;
+; where MODE is the octal representation of the mode. Note that this
+; does not overwrite the process's umask.
+; https://php.net/session.save-path
+;session.save_path = "/var/lib/php/sessions"
+
+; Whether to use strict session mode.
+; Strict session mode does not accept an uninitialized session ID, and
+; regenerates the session ID if the browser sends an uninitialized session ID.
+; Strict mode protects applications from session fixation via a session adoption
+; vulnerability. It is disabled by default for maximum compatibility, but
+; enabling it is encouraged.
+; https://wiki.php.net/rfc/strict_sessions
+session.use_strict_mode = 0
+
+; Whether to use cookies.
+; https://php.net/session.use-cookies
+session.use_cookies = 1
+
+; https://php.net/session.cookie-secure
+;session.cookie_secure =
+
+; This option forces PHP to fetch and use a cookie for storing and maintaining
+; the session id. We encourage this operation as it's very helpful in combating
+; session hijacking when not specifying and managing your own session id. It is
+; not the be-all and end-all of session hijacking defense, but it's a good start.
+; https://php.net/session.use-only-cookies
+session.use_only_cookies = 1
+
+; Name of the session (used as cookie name).
+; https://php.net/session.name
+session.name = PHPSESSID
+
+; Initialize session on request startup.
+; https://php.net/session.auto-start
+session.auto_start = 0
+
+; Lifetime in seconds of cookie or, if 0, until browser is restarted.
+; https://php.net/session.cookie-lifetime
+session.cookie_lifetime = 0
+
+; The path for which the cookie is valid.
+; https://php.net/session.cookie-path
+session.cookie_path = /
+
+; The domain for which the cookie is valid.
+; https://php.net/session.cookie-domain
+session.cookie_domain =
+
+; Whether or not to add the httpOnly flag to the cookie, which makes it
+; inaccessible to browser scripting languages such as JavaScript.
+; https://php.net/session.cookie-httponly
+session.cookie_httponly =
+
+; Add SameSite attribute to cookie to help mitigate Cross-Site Request Forgery (CSRF/XSRF)
+; Current valid values are "Strict", "Lax" or "None". When using "None",
+; make sure to include the quotes, as `none` is interpreted like `false` in ini files.
+; https://tools.ietf.org/html/draft-west-first-party-cookies-07
+session.cookie_samesite =
+
+; Handler used to serialize data. php is the standard serializer of PHP.
+; https://php.net/session.serialize-handler
+session.serialize_handler = php
+
+; Defines the probability that the 'garbage collection' process is started on every
+; session initialization. The probability is calculated by using gc_probability/gc_divisor,
+; e.g. 1/100 means there is a 1% chance that the GC process starts on each request.
+; Default Value: 1
+; Development Value: 1
+; Production Value: 1
+; https://php.net/session.gc-probability
+; Debian Default Value: 0
+; This is disabled in the Debian packages due to the strict permissions
+; on /var/lib/php. Instead, GC is performed through /etc/cron.d/php,
+; which uses the session.gc_maxlifetime setting. Please, check
+; /usr/share/doc/php8.2-common/README.Debian.gz for further reference.
+session.gc_probability = 0
+
+; Defines the probability that the 'garbage collection' process is started on every
+; session initialization. The probability is calculated by using gc_probability/gc_divisor,
+; e.g. 1/100 means there is a 1% chance that the GC process starts on each request.
+; For high volume production servers, using a value of 1000 is a more efficient approach.
+; Default Value: 100
+; Development Value: 1000
+; Production Value: 1000
+; https://php.net/session.gc-divisor
+session.gc_divisor = 1000
+
+; After this number of seconds, stored data will be seen as 'garbage' and
+; cleaned up by the garbage collection process.
+; https://php.net/session.gc-maxlifetime
+session.gc_maxlifetime = 1440
+
+; NOTE: If you are using the subdirectory option for storing session files
+;       (see session.save_path above), then garbage collection does *not*
+;       happen automatically.  You will need to do your own garbage
+;       collection through a shell script, cron entry, or some other method.
+;       For example, the following script is the equivalent of setting
+;       session.gc_maxlifetime to 1440 (1440 seconds = 24 minutes):
+;          find /path/to/sessions -cmin +24 -type f | xargs rm
+
+; Check HTTP Referer to invalidate externally stored URLs containing ids.
+; HTTP_REFERER has to contain this substring for the session to be
+; considered as valid.
+; https://php.net/session.referer-check
+session.referer_check =
+
+; Set to {nocache,private,public,} to determine HTTP caching aspects
+; or leave this empty to avoid sending anti-caching headers.
+; https://php.net/session.cache-limiter
+session.cache_limiter = nocache
+
+; Document expires after n minutes.
+; https://php.net/session.cache-expire
+session.cache_expire = 180
+
+; trans sid support is disabled by default.
+; Use of trans sid may risk your users' security.
+; Use this option with caution.
+; - User may send URL contains active session ID
+;   to other person via. email/irc/etc.
+; - URL that contains active session ID may be stored
+;   in publicly accessible computer.
+; - User may access your site with the same session ID
+;   always using URL stored in browser's history or bookmarks.
+; https://php.net/session.use-trans-sid
+session.use_trans_sid = 0
+
+; Set session ID character length. This value could be between 22 to 256.
+; Shorter length than default is supported only for compatibility reason.
+; Users should use 32 or more chars.
+; https://php.net/session.sid-length
+; Default Value: 32
+; Development Value: 26
+; Production Value: 26
+session.sid_length = 26
+
+; The URL rewriter will look for URLs in a defined set of HTML tags.
+; <form> is special; if you include them here, the rewriter will
+; add a hidden <input> field with the info which is otherwise appended
+; to URLs. <form> tag's action attribute URL will not be modified
+; unless it is specified.
+; Note that all valid entries require a "=", even if no value follows.
+; Default Value: "a=href,area=href,frame=src,form="
+; Development Value: "a=href,area=href,frame=src,form="
+; Production Value: "a=href,area=href,frame=src,form="
+; https://php.net/url-rewriter.tags
+session.trans_sid_tags = "a=href,area=href,frame=src,form="
+
+; URL rewriter does not rewrite absolute URLs by default.
+; To enable rewrites for absolute paths, target hosts must be specified
+; at RUNTIME. i.e. use ini_set()
+; <form> tags is special. PHP will check action attribute's URL regardless
+; of session.trans_sid_tags setting.
+; If no host is defined, HTTP_HOST will be used for allowed host.
+; Example value: php.net,www.php.net,wiki.php.net
+; Use "," for multiple hosts. No spaces are allowed.
+; Default Value: ""
+; Development Value: ""
+; Production Value: ""
+;session.trans_sid_hosts=""
+
+; Define how many bits are stored in each character when converting
+; the binary hash data to something readable.
+; Possible values:
+;   4  (4 bits: 0-9, a-f)
+;   5  (5 bits: 0-9, a-v)
+;   6  (6 bits: 0-9, a-z, A-Z, "-", ",")
+; Default Value: 4
+; Development Value: 5
+; Production Value: 5
+; https://php.net/session.hash-bits-per-character
+session.sid_bits_per_character = 5
+
+; Enable upload progress tracking in $_SESSION
+; Default Value: On
+; Development Value: On
+; Production Value: On
+; https://php.net/session.upload-progress.enabled
+;session.upload_progress.enabled = On
+
+; Cleanup the progress information as soon as all POST data has been read
+; (i.e. upload completed).
+; Default Value: On
+; Development Value: On
+; Production Value: On
+; https://php.net/session.upload-progress.cleanup
+;session.upload_progress.cleanup = On
+
+; A prefix used for the upload progress key in $_SESSION
+; Default Value: "upload_progress_"
+; Development Value: "upload_progress_"
+; Production Value: "upload_progress_"
+; https://php.net/session.upload-progress.prefix
+;session.upload_progress.prefix = "upload_progress_"
+
+; The index name (concatenated with the prefix) in $_SESSION
+; containing the upload progress information
+; Default Value: "PHP_SESSION_UPLOAD_PROGRESS"
+; Development Value: "PHP_SESSION_UPLOAD_PROGRESS"
+; Production Value: "PHP_SESSION_UPLOAD_PROGRESS"
+; https://php.net/session.upload-progress.name
+;session.upload_progress.name = "PHP_SESSION_UPLOAD_PROGRESS"
+
+; How frequently the upload progress should be updated.
+; Given either in percentages (per-file), or in bytes
+; Default Value: "1%"
+; Development Value: "1%"
+; Production Value: "1%"
+; https://php.net/session.upload-progress.freq
+;session.upload_progress.freq =  "1%"
+
+; The minimum delay between updates, in seconds
+; Default Value: 1
+; Development Value: 1
+; Production Value: 1
+; https://php.net/session.upload-progress.min-freq
+;session.upload_progress.min_freq = "1"
+
+; Only write session data when session data is changed. Enabled by default.
+; https://php.net/session.lazy-write
+;session.lazy_write = On
+
+[Assertion]
+; Switch whether to compile assertions at all (to have no overhead at run-time)
+; -1: Do not compile at all
+;  0: Jump over assertion at run-time
+;  1: Execute assertions
+; Changing from or to a negative value is only possible in php.ini!
+; (For turning assertions on and off at run-time, toggle zend.assertions between the values 1 and 0)
+; Default Value: 1
+; Development Value: 1
+; Production Value: -1
+; https://php.net/zend.assertions
+zend.assertions = -1
+
+[COM]
+; path to a file containing GUIDs, IIDs or filenames of files with TypeLibs
+; https://php.net/com.typelib-file
+;com.typelib_file =
+
+; allow Distributed-COM calls
+; https://php.net/com.allow-dcom
+;com.allow_dcom = true
+
+; autoregister constants of a component's typelib on com_load()
+; https://php.net/com.autoregister-typelib
+;com.autoregister_typelib = true
+
+; register constants casesensitive
+; https://php.net/com.autoregister-casesensitive
+;com.autoregister_casesensitive = false
+
+; show warnings on duplicate constant registrations
+; https://php.net/com.autoregister-verbose
+;com.autoregister_verbose = true
+
+; The default character set code-page to use when passing strings to and from COM objects.
+; Default: system ANSI code page
+;com.code_page=
+
+; The version of the .NET framework to use. The value of the setting are the first three parts
+; of the framework's version number, separated by dots, and prefixed with "v", e.g. "v4.0.30319".
+;com.dotnet_version=
+
+[mbstring]
+; language for internal character representation.
+; This affects mb_send_mail() and mbstring.detect_order.
+; https://php.net/mbstring.language
+;mbstring.language = Japanese
+
+; Use of this INI entry is deprecated, use global internal_encoding instead.
+; internal/script encoding.
+; Some encoding cannot work as internal encoding. (e.g. SJIS, BIG5, ISO-2022-*)
+; If empty, default_charset or internal_encoding or iconv.internal_encoding is used.
+; The precedence is: default_charset < internal_encoding < iconv.internal_encoding
+;mbstring.internal_encoding =
+
+; Use of this INI entry is deprecated, use global input_encoding instead.
+; http input encoding.
+; mbstring.encoding_translation = On is needed to use this setting.
+; If empty, default_charset or input_encoding or mbstring.input is used.
+; The precedence is: default_charset < input_encoding < mbstring.http_input
+; https://php.net/mbstring.http-input
+;mbstring.http_input =
+
+; Use of this INI entry is deprecated, use global output_encoding instead.
+; http output encoding.
+; mb_output_handler must be registered as output buffer to function.
+; If empty, default_charset or output_encoding or mbstring.http_output is used.
+; The precedence is: default_charset < output_encoding < mbstring.http_output
+; To use an output encoding conversion, mbstring's output handler must be set
+; otherwise output encoding conversion cannot be performed.
+; https://php.net/mbstring.http-output
+;mbstring.http_output =
+
+; enable automatic encoding translation according to
+; mbstring.internal_encoding setting. Input chars are
+; converted to internal encoding by setting this to On.
+; Note: Do _not_ use automatic encoding translation for
+;       portable libs/applications.
+; https://php.net/mbstring.encoding-translation
+;mbstring.encoding_translation = Off
+
+; automatic encoding detection order.
+; "auto" detect order is changed according to mbstring.language
+; https://php.net/mbstring.detect-order
+;mbstring.detect_order = auto
+
+; substitute_character used when character cannot be converted
+; one from another
+; https://php.net/mbstring.substitute-character
+;mbstring.substitute_character = none
+
+; Enable strict encoding detection.
+;mbstring.strict_detection = Off
+
+; This directive specifies the regex pattern of content types for which mb_output_handler()
+; is activated.
+; Default: mbstring.http_output_conv_mimetypes=^(text/|application/xhtml\+xml)
+;mbstring.http_output_conv_mimetypes=
+
+; This directive specifies maximum stack depth for mbstring regular expressions. It is similar
+; to the pcre.recursion_limit for PCRE.
+;mbstring.regex_stack_limit=100000
+
+; This directive specifies maximum retry count for mbstring regular expressions. It is similar
+; to the pcre.backtrack_limit for PCRE.
+;mbstring.regex_retry_limit=1000000
+
+[gd]
+; Tell the jpeg decode to ignore warnings and try to create
+; a gd image. The warning will then be displayed as notices
+; disabled by default
+; https://php.net/gd.jpeg-ignore-warning
+;gd.jpeg_ignore_warning = 1
+
+[exif]
+; Exif UNICODE user comments are handled as UCS-2BE/UCS-2LE and JIS as JIS.
+; With mbstring support this will automatically be converted into the encoding
+; given by corresponding encode setting. When empty mbstring.internal_encoding
+; is used. For the decode settings you can distinguish between motorola and
+; intel byte order. A decode setting cannot be empty.
+; https://php.net/exif.encode-unicode
+;exif.encode_unicode = ISO-8859-15
+
+; https://php.net/exif.decode-unicode-motorola
+;exif.decode_unicode_motorola = UCS-2BE
+
+; https://php.net/exif.decode-unicode-intel
+;exif.decode_unicode_intel    = UCS-2LE
+
+; https://php.net/exif.encode-jis
+;exif.encode_jis =
+
+; https://php.net/exif.decode-jis-motorola
+;exif.decode_jis_motorola = JIS
+
+; https://php.net/exif.decode-jis-intel
+;exif.decode_jis_intel    = JIS
+
+[Tidy]
+; The path to a default tidy configuration file to use when using tidy
+; https://php.net/tidy.default-config
+;tidy.default_config = /usr/local/lib/php/default.tcfg
+
+; Should tidy clean and repair output automatically?
+; WARNING: Do not use this option if you are generating non-html content
+; such as dynamic images
+; https://php.net/tidy.clean-output
+tidy.clean_output = Off
+
+[soap]
+; Enables or disables WSDL caching feature.
+; https://php.net/soap.wsdl-cache-enabled
+soap.wsdl_cache_enabled=1
+
+; Sets the directory name where SOAP extension will put cache files.
+; https://php.net/soap.wsdl-cache-dir
+soap.wsdl_cache_dir="/tmp"
+
+; (time to live) Sets the number of second while cached file will be used
+; instead of original one.
+; https://php.net/soap.wsdl-cache-ttl
+soap.wsdl_cache_ttl=86400
+
+; Sets the size of the cache limit. (Max. number of WSDL files to cache)
+soap.wsdl_cache_limit = 5
+
+[sysvshm]
+; A default size of the shared memory segment
+;sysvshm.init_mem = 10000
+
+[ldap]
+; Sets the maximum number of open links or -1 for unlimited.
+ldap.max_links = -1
+
+[dba]
+;dba.default_handler=
+
+[opcache]
+; Determines if Zend OPCache is enabled
+;opcache.enable=1
+
+; Determines if Zend OPCache is enabled for the CLI version of PHP
+;opcache.enable_cli=0
+
+; The OPcache shared memory storage size.
+;opcache.memory_consumption=128
+
+; The amount of memory for interned strings in Mbytes.
+;opcache.interned_strings_buffer=8
+
+; The maximum number of keys (scripts) in the OPcache hash table.
+; Only numbers between 200 and 1000000 are allowed.
+;opcache.max_accelerated_files=10000
+
+; The maximum percentage of "wasted" memory until a restart is scheduled.
+;opcache.max_wasted_percentage=5
+
+; When this directive is enabled, the OPcache appends the current working
+; directory to the script key, thus eliminating possible collisions between
+; files with the same name (basename). Disabling the directive improves
+; performance, but may break existing applications.
+;opcache.use_cwd=1
+
+; When disabled, you must reset the OPcache manually or restart the
+; webserver for changes to the filesystem to take effect.
+;opcache.validate_timestamps=1
+
+; How often (in seconds) to check file timestamps for changes to the shared
+; memory storage allocation. ("1" means validate once per second, but only
+; once per request. "0" means always validate)
+;opcache.revalidate_freq=2
+
+; Enables or disables file search in include_path optimization
+;opcache.revalidate_path=0
+
+; If disabled, all PHPDoc comments are dropped from the code to reduce the
+; size of the optimized code.
+;opcache.save_comments=1
+
+; If enabled, compilation warnings (including notices and deprecations) will
+; be recorded and replayed each time a file is included. Otherwise, compilation
+; warnings will only be emitted when the file is first cached.
+;opcache.record_warnings=0
+
+; Allow file existence override (file_exists, etc.) performance feature.
+;opcache.enable_file_override=0
+
+; A bitmask, where each bit enables or disables the appropriate OPcache
+; passes
+;opcache.optimization_level=0x7FFFBFFF
+
+;opcache.dups_fix=0
+
+; The location of the OPcache blacklist file (wildcards allowed).
+; Each OPcache blacklist file is a text file that holds the names of files
+; that should not be accelerated. The file format is to add each filename
+; to a new line. The filename may be a full path or just a file prefix
+; (i.e., /var/www/x  blacklists all the files and directories in /var/www
+; that start with 'x'). Line starting with a ; are ignored (comments).
+;opcache.blacklist_filename=
+
+; Allows exclusion of large files from being cached. By default all files
+; are cached.
+;opcache.max_file_size=0
+
+; How long to wait (in seconds) for a scheduled restart to begin if the cache
+; is not being accessed.
+;opcache.force_restart_timeout=180
+
+; OPcache error_log file name. Empty string assumes "stderr".
+;opcache.error_log=
+
+; All OPcache errors go to the Web server log.
+; By default, only fatal errors (level 0) or errors (level 1) are logged.
+; You can also enable warnings (level 2), info messages (level 3) or
+; debug messages (level 4).
+;opcache.log_verbosity_level=1
+
+; Preferred Shared Memory back-end. Leave empty and let the system decide.
+;opcache.preferred_memory_model=
+
+; Protect the shared memory from unexpected writing during script execution.
+; Useful for internal debugging only.
+;opcache.protect_memory=0
+
+; Allows calling OPcache API functions only from PHP scripts which path is
+; started from specified string. The default "" means no restriction
+;opcache.restrict_api=
+
+; Mapping base of shared memory segments (for Windows only). All the PHP
+; processes have to map shared memory into the same address space. This
+; directive allows to manually fix the "Unable to reattach to base address"
+; errors.
+;opcache.mmap_base=
+
+; Facilitates multiple OPcache instances per user (for Windows only). All PHP
+; processes with the same cache ID and user share an OPcache instance.
+;opcache.cache_id=
+
+; Enables and sets the second level cache directory.
+; It should improve performance when SHM memory is full, at server restart or
+; SHM reset. The default "" disables file based caching.
+;opcache.file_cache=
+
+; Enables or disables opcode caching in shared memory.
+;opcache.file_cache_only=0
+
+; Enables or disables checksum validation when script loaded from file cache.
+;opcache.file_cache_consistency_checks=1
+
+; Implies opcache.file_cache_only=1 for a certain process that failed to
+; reattach to the shared memory (for Windows only). Explicitly enabled file
+; cache is required.
+;opcache.file_cache_fallback=1
+
+; Enables or disables copying of PHP code (text segment) into HUGE PAGES.
+; Under certain circumstances (if only a single global PHP process is
+; started from which all others fork), this can increase performance
+; by a tiny amount because TLB misses are reduced.  On the other hand, this
+; delays PHP startup, increases memory usage and degrades performance
+; under memory pressure - use with care.
+; Requires appropriate OS configuration.
+;opcache.huge_code_pages=0
+
+; Validate cached file permissions.
+;opcache.validate_permission=0
+
+; Prevent name collisions in chroot'ed environment.
+;opcache.validate_root=0
+
+; If specified, it produces opcode dumps for debugging different stages of
+; optimizations.
+;opcache.opt_debug_level=0
+
+; Specifies a PHP script that is going to be compiled and executed at server
+; start-up.
+; https://php.net/opcache.preload
+;opcache.preload=
+
+; Preloading code as root is not allowed for security reasons. This directive
+; facilitates to let the preloading to be run as another user.
+; https://php.net/opcache.preload_user
+;opcache.preload_user=
+
+; Prevents caching files that are less than this number of seconds old. It
+; protects from caching of incompletely updated files. In case all file updates
+; on your site are atomic, you may increase performance by setting it to "0".
+;opcache.file_update_protection=2
+
+; Absolute path used to store shared lockfiles (for *nix only).
+;opcache.lockfile_path=/tmp
+
+[curl]
+; A default value for the CURLOPT_CAINFO option. This is required to be an
+; absolute path.
+;curl.cainfo =
+
+[openssl]
+; The location of a Certificate Authority (CA) file on the local filesystem
+; to use when verifying the identity of SSL/TLS peers. Most users should
+; not specify a value for this directive as PHP will attempt to use the
+; OS-managed cert stores in its absence. If specified, this value may still
+; be overridden on a per-stream basis via the "cafile" SSL stream context
+; option.
+;openssl.cafile=
+
+; If openssl.cafile is not specified or if the CA file is not found, the
+; directory pointed to by openssl.capath is searched for a suitable
+; certificate. This value must be a correctly hashed certificate directory.
+; Most users should not specify a value for this directive as PHP will
+; attempt to use the OS-managed cert stores in its absence. If specified,
+; this value may still be overridden on a per-stream basis via the "capath"
+; SSL stream context option.
+;openssl.capath=
+
+[ffi]
+; FFI API restriction. Possible values:
+; "preload" - enabled in CLI scripts and preloaded files (default)
+; "false"   - always disabled
+; "true"    - always enabled
+;ffi.enable=preload
+
+; List of headers files to preload, wildcard patterns allowed.
+;ffi.preload=
+root@minecraft:~# 
+
+Config servidor SMTP 
+root@minecraft:~# cat /etc/postfix/main.cf
+# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+
+smtpd_banner = $myhostname ESMTP $mail_name (Debian/GNU)
+biff = no
+
+# appending .domain is the MUA's job.
+append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+#delay_warning_time = 4h
+
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+mydestination = localhost
+relayhost = 
+mynetworks = 127.0.0.0/8
+inet_interfaces = loopback-only
+recipient_delimiter = +
+
+compatibility_level = 2
+
+myhostname = hostify.nuloapp.com
+myorigin = nuloapp.com
+milter_protocol = 6
+milter_default_action = accept
+smtpd_milters = inet:localhost:12301
+non_smtpd_milters = inet:localhost:12301
+smtp_helo_name = nuloapp.com
+root@minecraft:~# 
+Config OpenDKIM 
+ root@minecraft:~# cat /etc/opendkim.conf
+# This is a basic configuration for signing and verifying. It can easily be
+# adapted to suit a basic installation. See opendkim.conf(5) and
+# /usr/share/doc/opendkim/examples/opendkim.conf.sample for complete
+# documentation of available configuration parameters.
+
+Syslog                  yes
+SyslogSuccess           yes
+#LogWhy                 no
+
+# Common signing and verification parameters. In Debian, the "From" header is
+# oversigned, because it is often the identity key used by reputation systems
+# and thus somewhat security sensitive.
+Canonicalization        relaxed/simple
+#Mode                   sv
+#SubDomains             no
+OversignHeaders         From
+
+# Signing domain, selector, and key (required). For example, perform signing
+# for domain "example.com" with selector "2020" (2020._domainkey.example.com),
+# using the private key stored in /etc/dkimkeys/example.private. More granular
+# setup options can be found in /usr/share/doc/opendkim/README.opendkim.
+#Domain                 example.com
+#Selector               2020
+#KeyFile                /etc/dkimkeys/example.private
+
+# In Debian, opendkim runs as user "opendkim". A umask of 007 is required when
+# using a local socket with MTAs that access the socket as a non-privileged
+# user (for example, Postfix). You may need to add user "postfix" to group
+# "opendkim" in that case.
+UserID                  opendkim
+UMask                   007
+
+# Socket for the MTA connection (required). If the MTA is inside a chroot jail,
+# it must be ensured that the socket is accessible. In Debian, Postfix runs in
+# a chroot in /var/spool/postfix, therefore a Unix socket would have to be
+# configured as shown on the last line below.
+Socket                  local:/run/opendkim/opendkim.sock
+#Socket                 inet:8891@localhost
+#Socket                 inet:8891
+#Socket                 local:/var/spool/postfix/opendkim/opendkim.sock
+
+PidFile                 /run/opendkim/opendkim.pid
+
+# Hosts for which to sign rather than verify, default is 127.0.0.1. See the
+# OPERATION section of opendkim(8) for more information.
+#InternalHosts          192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12
+
+# The trust anchor enables DNSSEC. In Debian, the trust anchor file is provided
+# by the package dns-root-data.
+TrustAnchorFile         /usr/share/dns/root.key
+#Nameservers            127.0.0.1
+AutoRestart Yes
+AutoRestartRate 10/1h
+Syslog yes
+SyslogSuccess yes
+Mode sv
+Canonicalization relaxed/simple
+Domain nuloapp.com
+Selector mail
+KeyFile /etc/opendkim/keys/nuloapp.com/mail.private
+Socket inet:12301@localhost
+
+Clave privada DKIM 
+
+root@minecraft:~# cat /etc/opendkim/keys/nuloapp.com/mail.private
+-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDpXpNj0kcPprnH
+EzSkPFU2/i3v5NsYZtNeyLm8khlLRgq5aWVlL+sEat5p3WNJZVta4xCjP28E1dhv
+bFIod34lBIXXKGrHuA+oMg7OjJcrl3+BCXXvCVYmFfuOteUifBGws+TJvw/xUA2y
+NhdX++JKZpBXiq/i453IXnpu+b4zWf+tyb6TKc9UpEnBPcCMj6Gs5qhRw83FBrII
+yfwXOb/+7JkZHDQX2gmhcy8gC0mAWGBGTiVkLkgB9o5uNS2BYKoz7rkZk5TLNKbS
+GDlSYrhoC6eTJ1C/vM6E8r3gAFdBb6Ot762rFSqSbgnSs4cIrH6XHqvZDoJCGYHC
+kD/FEhFnAgMBAAECggEAAoNwZ96D6RuNDUrqvP8EbmZFz8UqT4rQ5JeGFOYnxb1P
+sEH+CKcdUEMsjSTg9htAvY4pbxisugsRHMSQ+Qmt96qPRAFa0V5PqmWfn4J9+WSt
+233svz5TuuVH3nhiITxWFHCC8zqJuWtRdYWZdxJbHjDKI1h2vH3sBIC//l0Q//jf
+09W2MLG0y+o/t+9r2lr8G/wXD0tcdGF2KG282FljWgGvRb+3Sv1p7JkwUrXFp4Ev
+m01fRvJ+NpoylfJBm6pPl3YCfeT7hwOyN+k0HmeiHqiVyprQjsXfdIZNQlqF933X
+3mpCrMM3waW4xjTUtMgYH0LkmH4wEOFU4txDD6evgQKBgQD+GLcOiK1lvg+Q0ZMD
+370FlFRFs9shQoZeMmCHgx5GI9RO3EKxrAFxDUrFy4pGf9icCewPa/1jjXxDv/Ab
+abYrDCyIH0EtCzargsJyrAtDrQkG5B/Hta243Puxxwo50faYfSDPXIDetWx7AUG2
+WPMJm5LH8VDvOBMY3k6ej8YBOQKBgQDrHhyql82r2IuXyAcacMJtYF3ydqRbXKUg
+Q7OmmP0edJv0g76u+Ijri6nc3jvp4FV1m3E4Vi6TChb8vCMVhklX5pBhjnz3Jrfm
+Iz3FrQQD+BOJ4JTIvhLaFl2DtpzyE0CVz2TnXaC36KJFFGCwaJIusCFeUzOpskAi
+LpviE0THnwKBgQCs8al2jPRoMWpqyRnlIx2GdKS/JGFbS+okpukoksfCOZTBcA08
+3LPGfKON6LFetpl56w7umDPI1H3lpvgH0HWa6xhMNemofN9i8QbkAdFQ6K8iL5ap
+2TA6iL4PDEgbfpr2wwPX30AfVSBWwE43jGcu/OJ0j/zkNShaXsToCzdbkQKBgA5W
+5s6stXl+mnzmUTCWofUDxJcOD1YXH2cJWgKWIBHkcMKH6nBHbipXeUOkNik8alni
+4hPahbqoCeDeJJGigAShZjrc8tgr/1lE2vacZ7tKPP7SuKBJn2K3rHpk/8tvyyeX
+34KQ3kV5JbRq2r7HkerRCSf0kRkPawPqrc0q+a3nAoGAVmbLc0Q83xKfpJJaE7+H
+72jLOLMLHoRrQTJid6+AqZNxtC2rBp0lexVGPhH2C16GHd4p3Xw+acJDUQdM/BON
+g2YhTbfi5N6AF1SmYCXXoXUGC9sfrvGVN2vyefE1OVUCEMyUsxirOEoW14IKB+es
+nFK6qHZp3pzqcW8rFfeQHQ8=
+-----END PRIVATE KEY-----
+root@minecraft:~# 
+
+Clave pública DKIM 
+root@minecraft:~# cat /etc/opendkim/keys/nuloapp.com/mail.txt
+mail._domainkey IN      TXT     ( "v=DKIM1; h=sha256; k=rsa; "
+          "p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6V6TY9JHD6a5xxM0pDxVNv4t7+TbGGbTXsi5vJIZS0YKuWllZS/rBGread1jSWVbWuMQoz9vBNXYb2xSKHd+JQSF1yhqx7gPqDIOzoyXK5d/gQl17wlWJhX7jrXlInwRsLPkyb8P8VANsjYXV/viSmaQV4qv4uOdyF56bvm+M1n/rcm+kynPVKRJwT3AjI+hrOaoUcPNxQayCM"
+          "n8Fzm//uyZGRw0F9oJoXMvIAtJgFhgRk4lZC5IAfaObjUtgWCqM+65GZOUyzSm0hg5UmK4aAunkydQv7zOhPK94ABXQW+jre+tqxUqkm4J0rOHCKx+lx6r2Q6CQhmBwpA/xRIRZwIDAQAB" )  ; ----- DKIM key mail for nuloapp.com
+
+Config Cloudflare Tunnel 
+
+root@minecraft:~# cat /etc/cloudflared/config.yml
+tunnel: hostify
+credentials-file: /root/.cloudflared/2aab902f-c874-4d4f-b610-82404a8cd055.json
+
+ingress:
+  - hostname: hostify.nuloapp.com
+    service: http://localhost:80
+  - service: http_status:404
+root@minecraft:~# 
+
+Footer plantilla web 
+root@minecraft:~# cat /var/www/html/custom/templates/DefaultRevamp/footer.tpl
+    {if count($WIDGETS_FOOTER)}
+        {foreach from=$WIDGETS_FOOTER item=widget}
+            {$widget}
+        {/foreach}
+    {/if}
+</div>
+</div>
+
+<div class="ui inverted vertical footer segment" id="footer">
+    <div class="ui container">
+        <div class="ui stackable inverted divided equal height stackable grid">
+            <div class="{if $SOCIAL_MEDIA_ICONS|count > 0}six{else}eight{/if} wide column">
+                <h4 class="ui inverted header">{$SITE_NAME}</h4>
+                <div class="ui inverted link list">
+                    <span class="item">&copy; {$SITE_NAME} {'Y'|date}</span>
+                    <span class="item">Powered By <a href="https://namelessmc.com">NamelessMC</a></span>
+                    {if $PAGE_LOAD_TIME}
+                    <span class="item" id="page_load"></span>
+                    {/if}
+                    <span class="item" id="darkmode">
+                        <input type="checkbox" class="darkmode-toggle" id="darkmode-toggle" onclick="toggleDarkLightMode()">
+                        <label for="darkmode-toggle" class="darkmode-toggle-label">
+                            <i class="fas fa-moon"></i>
+                            <i class="fas fa-sun"></i>
+                            <div class="darkmode-ball"></div>
+                        </label>
+
+                        <script type="text/javascript">
+                            if (document.body.classList.contains('dark')) {
+                                document.getElementById("darkmode-toggle").checked = true;
+                            } else {
+                                document.getElementById("darkmode-toggle").checked = false;
+                            }
+                        </script>
+                    </span>
+                    {if isset($AUTO_LANGUAGE)}
+                        <a class="item" href="javascript:" onclick="toggleAutoLanguage()" id="auto-language"></a>
+                    {/if}
+                </div>
+            </div>
+            <div class="{if $SOCIAL_MEDIA_ICONS|count > 0}five{else}eight{/if} wide column">
+                <h4 class="ui inverted header">{$FOOTER_LINKS_TITLE}</h4>
+                <div class="ui inverted link list">
+                    {foreach from=$FOOTER_NAVIGATION key=name item=item}
+                    {if isset($item.items)}
+                    <div class="ui dropdown item">
+                        <span class="text">{$item.icon} {$item.title} <i class="dropdown icon"></i></span>
+                        <div class="menu">
+                            <div class="header">{$item.title}</div>
+                            {foreach from=$item.items item=dropdown}
+                            <a class="item" href="{$dropdown.link}" target="{$dropdown.target}">{$dropdown.icon}
+                                {$dropdown.title}</a>
+                            {/foreach}
+                        </div>
+                    </div>
+                    {else}
+                    <a class="item" href="{$item.link}" target="{$item.target}">{$item.icon} {$item.title}</a>
+                    {/if}
+                    {/foreach}
+                    <a class="item" href="{$TERMS_LINK}">{$TERMS_TEXT}</a>
+                    <a class="item" href="{$PRIVACY_LINK}">{$PRIVACY_TEXT}</a>
+                </div>
+            </div>
+            {if $SOCIAL_MEDIA_ICONS|count > 0}
+            <div class="five wide column">
+                <h4 class="ui inverted header">{$FOOTER_SOCIAL_TITLE}</h4>
+                <div class="ui inverted link list">
+                    {foreach from=$SOCIAL_MEDIA_ICONS item=icon}
+                    <a class="item" href="{$icon.link}">{$icon.text}</a>
+                    {/foreach}
+                </div>
+            </div>
+            {/if}
+        </div>
+    </div>
+</div>
+
+{if isset($GLOBAL_WARNING_TITLE)}
+<div class="ui medium modal" id="modal-acknowledge">
+    <div class="header">
+        {$GLOBAL_WARNING_TITLE}
+    </div>
+    <div class="content">
+        {$GLOBAL_WARNING_REASON}
+    </div>
+    <div class="actions">
+        <a class="ui positive button" href="{$GLOBAL_WARNING_ACKNOWLEDGE_LINK}">{$GLOBAL_WARNING_ACKNOWLEDGE}</a>
+    </div>
+</div>
+{/if}
+
+{foreach from=$TEMPLATE_JS item=script}
+    {$script}
+{/foreach}
+
+{if isset($GLOBAL_WARNING_TITLE)}
+<script type="text/javascript">
+    $('#modal-acknowledge').modal({ closable: false }).modal('show');
+</script>
+{/if}
+
+<script type="text/javascript">
+    function toggleDarkLightMode() {
+        $.post("{$DARK_LIGHT_MODE_ACTION}", { token: "{$DARK_LIGHT_MODE_TOKEN}" })
+            .done(function () {
+                window.location.reload();
+            });
+
+        return false;
+    }
+
+    {if isset($AUTO_LANGUAGE)}
+        const autoLanguage = document.getElementById('auto-language');
+        const autoLanguageValue = $.cookie('auto_language') ?? 'true';
+        autoLanguage.innerText = '{$AUTO_LANGUAGE_TEXT} (' + (autoLanguageValue === 'true' ? '{$ENABLED}' : '{$DISABLED}') + ')';
+        {if isset($AUTO_LANGUAGE_VALUE)}
+            if (autoLanguageValue) {
+                autoLanguage.title = '{$AUTO_LANGUAGE_VALUE}';
+            }
+        {/if}
+
+        function toggleAutoLanguage() {
+            $.cookie(
+                'auto_language',
+                autoLanguageValue === 'true' ? 'false' : 'true',
+                { path: '/' }
+            );
+            window.location.reload();
+        }
+    {/if}
+</script>
+
+{if isset($NEW_UPDATE) && ($NEW_UPDATE_URGENT != true)}
+    <script src="{$TEMPLATE.path}/js/core/update.js"></script>
+{/if}
+
+{if !isset($EXCLUDE_END_BODY)}
+    {if isset($DEBUGBAR_HTML)}
+    {$DEBUGBAR_HTML}
+{/if}
+{include file='hostify-bot.tpl'}
+</body>
+
+</html>
+{/if}
+root@minecraft:~# 
+
+Plantilla widget chat 
+root@minecraft:~# cat /var/www/html/custom/templates/DefaultRevamp/hostify-bot.tpl
+<style>{literal}
+#hostify-chat-bubble {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #00FF41, #00AA22);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,255,65,0.4);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s;
+}
+#hostify-chat-bubble:hover { transform: scale(1.1); }
+#hostify-chat-bubble svg { width: 30px; height: 30px; fill: white; }
+
+#hostify-chat-window {
+  position: fixed;
+  bottom: 100px;
+  right: 25px;
+  width: 360px;
+  height: 500px;
+  background: #1a1a1a;
+  border-radius: 15px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  z-index: 9998;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #00FF41;
+}
+#hostify-chat-window.open { display: flex; }
+
+#hostify-chat-header {
+  background: linear-gradient(135deg, #00FF41, #00AA22);
+  padding: 15px;
+  color: white;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#hostify-chat-close {
+  cursor: pointer;
+  font-size: 20px;
+  background: none;
+  border: none;
+  color: white;
+}
+
+#hostify-chat-messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+}
+.hostify-msg {
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  max-width: 80%;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+.hostify-msg.bot {
+  background: #2a2a2a;
+  color: #fff;
+  align-self: flex-start;
+}
+.hostify-msg.user {
+  background: #00FF41;
+  color: #000;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+#hostify-chat-input-area {
+  display: flex;
+  padding: 10px;
+  background: #0f0f0f;
+  border-top: 1px solid #333;
+}
+#hostify-chat-input {
+  flex: 1;
+  padding: 10px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 8px;
+  color: white;
+  font-family: Arial, sans-serif;
+  outline: none;
+}
+#hostify-chat-send {
+  margin-left: 8px;
+  padding: 10px 16px;
+  background: #00FF41;
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+}
+#hostify-chat-send:hover { background: #00AA22; color: white; }
+.hostify-typing { color: #888; font-style: italic; font-size: 12px; padding: 5px 14px; }
+{/literal}</style>
+
+<div id="hostify-chat-bubble" onclick="hostifyToggleChat()">
+  <svg viewBox="0 0 24 24"><path d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2Z"/></svg>
+</div>
+
+<div id="hostify-chat-window">
+  <div id="hostify-chat-header">
+    <span>🤖 Asistente Hostify</span>
+    <button id="hostify-chat-close" onclick="hostifyToggleChat()">×</button>
+  </div>
+  <div id="hostify-chat-messages">
+    <div class="hostify-msg bot">¡Hola! Soy el asistente de Hostify. Pregúntame lo que quieras sobre el servidor, rangos, comandos, etc.</div>
+  </div>
+  <div id="hostify-chat-input-area">
+    <input type="text" id="hostify-chat-input" placeholder="Escribe tu mensaje..." onkeydown="if(event.key==='Enter')hostifySend()">
+    <button id="hostify-chat-send" onclick="hostifySend()">➤</button>
+  </div>
+</div>
+
+<script>{literal}
+function hostifyToggleChat() {
+  document.getElementById('hostify-chat-window').classList.toggle('open');
+}
+
+async function hostifySend() {
+  const input = document.getElementById('hostify-chat-input');
+  const messages = document.getElementById('hostify-chat-messages');
+  const text = input.value.trim();
+  if (!text) return;
+  
+  const userMsg = document.createElement('div');
+  userMsg.className = 'hostify-msg user';
+  userMsg.textContent = text;
+  messages.appendChild(userMsg);
+  input.value = '';
+  
+  const typing = document.createElement('div');
+  typing.className = 'hostify-typing';
+  typing.textContent = 'Escribiendo...';
+  typing.id = 'hostify-typing';
+  messages.appendChild(typing);
+  messages.scrollTop = messages.scrollHeight;
+  
+  try {
+    const res = await fetch('/gemini-proxy.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({message: text})
+    });
+    const data = await res.json();
+    document.getElementById('hostify-typing').remove();
+    
+    const botMsg = document.createElement('div');
+    botMsg.className = 'hostify-msg bot';
+    botMsg.textContent = data.reply || 'Error al responder';
+    messages.appendChild(botMsg);
+    messages.scrollTop = messages.scrollHeight;
+  } catch (e) {
+    document.getElementById('hostify-typing').remove();
+    const errMsg = document.createElement('div');
+    errMsg.className = 'hostify-msg bot';
+    errMsg.textContent = 'Error de conexión';
+    messages.appendChild(errMsg);
+  }
+}
+{/literal}</script>
+root@minecraft:~# 
+
+Proxy PHP a Gemini 
+root@minecraft:~# cat /var/www/html/gemini-proxy.php
+<?php
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Headers: Content-Type');
+
+$API_KEY = 'SECRET';
+
+$input = json_decode(file_get_contents('php://input'), true);
+$userMessage = $input['message'] ?? '';
+
+if (empty($userMessage)) {
+    echo json_encode(['error' => 'No message provided']);
+    exit;
+}
+
+$systemPrompt = "Eres el asistente oficial del servidor de Minecraft Hostify. Responde de forma breve, amigable y en español. Información del servidor:
+- IP del servidor: degree-forms.gl.joinmc.link:25565
+- Web: https://hostify.nuloapp.com
+- Tienda: https://minecraft-java-edition.tebex.io
+- Rangos disponibles: VIP, VIP+, MVP, MVP+, MVP++, HELPER, MOD, ADMIN, OWNER
+- Versión: Paper 1.21.4
+- Modo offline activado (compatible con TLauncher)
+- Tiene economía con monedas, comandos: /balance, /pay, /baltop
+- Sistema de rangos con LuckPerms
+- Web con foros, perfiles y tienda integrada
+
+Si te preguntan algo no relacionado con Minecraft o Hostify, responde igualmente pero recordando que eres asistente de Hostify.";
+
+$data = [
+    'contents' => [
+        [
+            'parts' => [
+                ['text' => $systemPrompt . "\n\nUsuario: " . $userMessage]
+            ]
+        ]
+    ]
+];
+
+$ch = curl_init('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . $API_KEY);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+$response = curl_exec($ch);
+curl_close($ch);
+
+$result = json_decode($response, true);
+$reply = $result['candidates'][0]['content']['parts'][0]['text'] ?? 'Lo siento, no pude responder.';
+
+echo json_encode(['reply' => $reply]);
+?>
+root@minecraft:~# 
+
