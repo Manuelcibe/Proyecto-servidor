@@ -1,0 +1,1089 @@
+Playbook PufferPanel + Web + Minecraft
+
+hostify-ansible/
+├── playbook.yml                 ← Orquestador principal
+├── inventory.yml                 ← IPs de las máquinas destino
+├── vars.yml                        ← Variables (claves, contraseñas, IPs)
+├── ansible.cfg                     ← Configuración global de Ansible
+├── requirements.yml           ← Colecciones de Ansible Galaxy necesarias
+├── setup.sh                         ← Script de pre-comprobación
+└── roles/
+    ├── 01-system                  ← Sistema base + Java 21
+    ├── 02-database               ← MariaDB
+    ├── 03-webserver             ← Apache + PHP
+    ├── 04-pufferpanel           ← Panel de control del servidor MC
+    ├── 05-minecraft              ← Servidor Paper + plugins + rangos
+    ├── 06-namelessmc         ← Web NamelessMC + módulo Tebex
+    └── 07-chatbot                  ← Widget de IA con Gemini
+
+Orquestador principal
+root@ansible-node:~/playbook_minecraft/hostify-ansible# cat playbook.yml 
+---
+# ═══════════════════════════════════════════════════════════════
+# HOSTIFY - Despliegue automatizado completo
+# ═══════════════════════════════════════════════════════════════
+# Ejecuta: ansible-playbook -i inventory.yml playbook.yml
+# ═══════════════════════════════════════════════════════════════
+
+- name: Despliegue completo de Hostify
+  hosts: hostify
+  become: yes
+  gather_facts: yes
+  vars_files:
+    - vars.yml
+
+  pre_tasks:
+    - name: Comprobar conectividad SSH
+      ansible.builtin.ping:
+      tags: always
+
+    - name: Mostrar resumen del despliegue
+      ansible.builtin.debug:
+        msg:
+          - "═══════════════════════════════════════════════════════"
+          - "  HOSTIFY - Iniciando despliegue automatizado"
+          - "═══════════════════════════════════════════════════════"
+          - "  Host: {{ hostify_ip }}"
+          - "  Hostname: {{ hostify_hostname }}"
+          - "  Admin: {{ admin_username }}"
+          - "  Tiempo estimado: 15-20 minutos"
+          - "═══════════════════════════════════════════════════════"
+      tags: always
+
+  roles:
+    - role: 01-system
+      tags: [system, base]
+    - role: 02-database
+      tags: [database, mariadb]
+    - role: 03-webserver
+      tags: [web, apache, php]
+    - role: 04-pufferpanel
+      tags: [pufferpanel, panel]
+    - role: 05-minecraft
+      tags: [minecraft, paper, plugins]
+    - role: 06-namelessmc
+      tags: [namelessmc, web]
+    - role: 07-chatbot
+      tags: [chatbot, gemini]
+
+  post_tasks:
+    - name: Resumen final del despliegue
+      ansible.builtin.debug:
+        msg:
+          - "═══════════════════════════════════════════════════════"
+          - "  ✅ HOSTIFY desplegado correctamente"
+          - "═══════════════════════════════════════════════════════"
+          - ""
+          - "  ACCESOS:"
+          - "  ─ PufferPanel:    http://{{ hostify_ip }}:{{ pufferpanel_port }}"
+          - "  ─ NamelessMC:     http://{{ hostify_ip }}/install.php  ← INSTALAR PRIMERO"
+          - ""
+          - "  CREDENCIALES:"
+          - "  ─ Admin user:     {{ admin_username }}"
+          - "  ─ Admin email:    {{ admin_email }}"
+          - "  ─ Admin pass:     (la que pusiste en vars.yml)"
+          - "  ─ DB user:        {{ nameless_db_user }}"
+          - "  ─ DB pass:        {{ nameless_db_password }}"
+          - "  ─ DB name:        {{ nameless_db_name }}"
+          - ""
+          - "  PRÓXIMOS PASOS MANUALES (5 min):"
+          - "  1. Ve a http://{{ hostify_ip }}/install.php y completa el instalador web"
+          - "     (los datos a poner están arriba)"
+          - ""
+          - "  2. En PufferPanel, importa la plantilla minecraft-paper"
+          - "     y crea un servidor apuntando a /opt/hostify-mc"
+          - ""
+          - "  3. Una vez el servidor MC arranque, en consola ejecuta:"
+          - "     lp import hostify-ranks"
+          - "     (esto crea los 9 rangos automáticamente)"
+          - ""
+          - "  4. En la consola del servidor MC ejecuta:"
+          - "     tebex secret {{ tebex_secret_key }}"
+          - ""
+          - "  ¡Disfruta de tu Hostify! 🎮"
+          - "═══════════════════════════════════════════════════════"
+      tags: always
+root@ansible-node:~/playbook_minecraft/hostify-ansible# 
+IPs de las máquinas destino 
+root@ansible-node:~/playbook_minecraft/hostify-ansible# cat inventory.yml 
+all:
+  hosts:
+    hostify:
+      ansible_host: 192.168.20.21
+      ansible_user: root
+      ansible_port: 22
+      ansible_python_interpreter: /usr/bin/python3
+      # Si usas clave SSH:
+      # ansible_ssh_private_key_file: ~/.ssh/id_rsa
+      # Si usas contraseña, instala sshpass y descomenta:
+      # ansible_ssh_pass: "tu_contraseña_root"
+root@ansible-node:~/playbook_minecraft/hostify-ansible# 
+
+Variables (claves, contraseñas, IPs) 
+vars.yml 
+No pondre el contenido 
+
+Configuración global de Ansible 
+root@ansible-node:~/playbook_minecraft/hostify-ansible# cat ansible.cfg 
+[defaults]
+inventory = inventory.yml
+host_key_checking = False
+retry_files_enabled = False
+stdout_callback = yaml
+deprecation_warnings = False
+interpreter_python = auto_silent
+
+[ssh_connection]
+pipelining = True
+ssh_args = -o ControlMaster=auto -o ControlPersist=60s
+
+Colecciones de Ansible Galaxy necesarias 
+root@ansible-node:~/playbook_minecraft/hostify-ansible# cat requirements.yml 
+---
+# Colecciones de Ansible necesarias
+collections:
+  - name: community.general
+    version: ">=7.0.0"
+  - name: community.mysql
+    version: ">=3.5.0"
+  - name: ansible.posix
+    version: ">=1.5.0"
+root@ansible-node:~/playbook_minecraft/hostify-ansible# 
+
+Script de pre-comprobación 
+root@ansible-node:~/playbook_minecraft/hostify-ansible# cat setup.sh
+#!/bin/bash
+# ═══════════════════════════════════════════════════════════════
+# Hostify - Script de preparación de la estación de control
+# Ejecuta esto antes de ansible-playbook
+# ═══════════════════════════════════════════════════════════════
+
+set -e
+
+echo "═══════════════════════════════════════════════════════════════"
+echo "  Hostify - Preparando estación de control para Ansible"
+echo "═══════════════════════════════════════════════════════════════"
+
+# Verificar que Ansible está instalado
+if ! command -v ansible &> /dev/null; then
+    echo "❌ Ansible no está instalado."
+    echo "   Instálalo con: sudo apt install ansible"
+    echo "   O: pip install ansible"
+    exit 1
+fi
+
+echo "✅ Ansible detectado: $(ansible --version | head -1)"
+
+# Instalar colecciones requeridas
+echo ""
+echo "📦 Instalando colecciones de Ansible Galaxy..."
+ansible-galaxy collection install -r requirements.yml
+
+# Verificar conectividad con el host
+echo ""
+echo "🔌 Probando conectividad SSH con el host..."
+if ansible -i inventory.yml hostify -m ping; then
+    echo "✅ Conectividad OK"
+else
+    echo "❌ No se puede conectar al host"
+    echo "   Verifica:"
+    echo "   - El contenedor está encendido"
+    echo "   - La IP en inventory.yml es correcta"
+    echo "   - SSH está habilitado para root"
+    echo "   - Puedes hacer: ssh root@<IP>"
+    exit 1
+fi
+
+echo ""
+echo "═══════════════════════════════════════════════════════════════"
+echo "  ✅ Todo listo. Ejecuta el playbook con:"
+echo ""
+echo "     ansible-playbook -i inventory.yml playbook.yml"
+echo ""
+echo "═══════════════════════════════════════════════════════════════"
+root@ansible-node:~/playbook_minecraft/hostify-ansible# 
+
+Sistema base + Java 21 
+root@ansible-node:~/playbook_minecraft/hostify-ansible/roles/01-system/tasks# cat main.yml 
+---
+# ═══════════════════════════════════════════════════════════════
+# ROL 01: Sistema base
+# Configura hostname, timezone, paquetes esenciales y Java 21
+# ═══════════════════════════════════════════════════════════════
+
+- name: Configurar hostname
+  ansible.builtin.hostname:
+    name: "{{ hostify_hostname }}"
+
+- name: Añadir hostname a /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.0\.1\.1'
+    line: "127.0.1.1 {{ hostify_hostname }}"
+    state: present
+
+- name: Configurar timezone
+  community.general.timezone:
+    name: "{{ timezone }}"
+
+- name: Actualizar caché de paquetes apt
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Instalar paquetes base (sin Java de momento)
+  ansible.builtin.apt:
+    name:
+      - curl
+      - wget
+      - unzip
+      - git
+      - nano
+      - sudo
+      - software-properties-common
+      - apt-transport-https
+      - ca-certificates
+      - gnupg
+      - lsb-release
+      - python3-pip
+      - python3-pymysql
+      - net-tools
+      - dnsutils
+      - htop
+    state: present
+
+# ──────────────────────────────────────────
+# Java 21 desde Adoptium (Eclipse Temurin)
+# Debian 12 no tiene Java 21 en repos oficiales
+# ──────────────────────────────────────────
+- name: Crear directorio /etc/apt/keyrings
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Añadir clave GPG de Adoptium
+  ansible.builtin.get_url:
+    url: https://packages.adoptium.net/artifactory/api/gpg/key/public
+    dest: /etc/apt/keyrings/adoptium.asc
+    mode: '0644'
+
+- name: Añadir repositorio de Adoptium
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/adoptium.list
+    content: "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb {{ ansible_distribution_release }} main\n"
+    mode: '0644'
+
+- name: Actualizar caché tras añadir Adoptium
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Instalar Java 21 (Temurin)
+  ansible.builtin.apt:
+    name: temurin-21-jre
+    state: present
+
+- name: Verificar instalación de Java
+  ansible.builtin.command: java -version
+  register: java_version
+  changed_when: false
+
+- name: Mostrar versión de Java instalada
+  ansible.builtin.debug:
+    msg: "{{ java_version.stderr_lines }}"
+
+# ──────────────────────────────────────────
+# Directorios y locale
+# ──────────────────────────────────────────
+- name: Crear directorio de descargas temporales
+  ansible.builtin.file:
+    path: /tmp/hostify-downloads
+    state: directory
+    mode: '0755'
+
+- name: Configurar locale en español
+  ansible.builtin.shell: |
+    if ! locale -a | grep -q "es_ES.utf8"; then
+      sed -i 's/# es_ES.UTF-8/es_ES.UTF-8/' /etc/locale.gen
+      locale-gen
+      update-locale LANG=es_ES.UTF-8
+    fi
+  args:
+    executable: /bin/bash
+  register: locale_result
+  changed_when: "'es_ES.utf8' not in locale_result.stdout"
+  ignore_errors: yes
+root@ansible-node:~/playbook_minecraft/hostify-ansible/roles/01-system/tasks# 
+
+MariaDB 
+root@ansible-node:~/playbook_minecraft/hostify-ansible/roles/02-database/tasks# cat main.yml 
+---
+# ═══════════════════════════════════════════════════════════════
+# ROL 02: Base de datos MariaDB
+# ═══════════════════════════════════════════════════════════════
+
+- name: Instalar MariaDB
+  ansible.builtin.apt:
+    name:
+      - mariadb-server
+      - mariadb-client
+    state: present
+
+- name: Iniciar y habilitar MariaDB
+  ansible.builtin.systemd:
+    name: mariadb
+    enabled: yes
+    state: started
+
+- name: Esperar a que MariaDB esté disponible
+  ansible.builtin.wait_for:
+    port: 3306
+    host: 127.0.0.1
+    timeout: 30
+
+- name: Configurar contraseña root MariaDB
+  community.mysql.mysql_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: root
+    password: "{{ mariadb_root_password }}"
+    host_all: yes
+    state: present
+  no_log: true
+
+- name: Crear archivo .my.cnf para root (acceso sin password)
+  ansible.builtin.copy:
+    dest: /root/.my.cnf
+    mode: '0600'
+    content: |
+      [client]
+      user=root
+      password={{ mariadb_root_password }}
+  no_log: true
+
+- name: Eliminar usuarios anónimos
+  community.mysql.mysql_user:
+    login_user: root
+    login_password: "{{ mariadb_root_password }}"
+    name: ''
+    host_all: yes
+    state: absent
+
+- name: Eliminar base de datos test
+  community.mysql.mysql_db:
+    login_user: root
+    login_password: "{{ mariadb_root_password }}"
+    name: test
+    state: absent
+
+- name: Crear base de datos hostify
+  community.mysql.mysql_db:
+    login_user: root
+    login_password: "{{ mariadb_root_password }}"
+    name: "{{ nameless_db_name }}"
+    encoding: utf8mb4
+    collation: utf8mb4_unicode_ci
+    state: present
+
+- name: Crear usuario nameless con mysql_native_password
+  ansible.builtin.shell: |
+    mysql -u root -p'{{ mariadb_root_password }}' -e "
+    CREATE USER IF NOT EXISTS '{{ nameless_db_user }}'@'localhost'
+    IDENTIFIED VIA mysql_native_password USING PASSWORD('{{ nameless_db_password }}');
+    GRANT ALL PRIVILEGES ON {{ nameless_db_name }}.* TO '{{ nameless_db_user }}'@'localhost';
+    FLUSH PRIVILEGES;"
+  no_log: true
+  register: db_user_result
+  changed_when: db_user_result.rc == 0
+root@ansible-node:~/playbook_minecraft/hostify-ansible/roles/02-database/tasks# 
+Apache + PHP 
+root@ansible-node:~/playbook_minecraft/hostify-ansible/roles/03-webserver/tasks# cat main.yml 
+---
+# ═══════════════════════════════════════════════════════════════
+# ROL 03: Servidor web (Apache + PHP)
+# ═══════════════════════════════════════════════════════════════
+
+- name: Añadir repositorio de PHP (Sury)
+  ansible.builtin.shell: |
+    curl -sSLo /usr/share/keyrings/deb.sury.org-php.gpg https://packages.sury.org/php/apt.gpg
+    echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ {{ ansible_distribution_release }} main" > /etc/apt/sources.list.d/php.list
+  args:
+    creates: /etc/apt/sources.list.d/php.list
+
+- name: Actualizar caché tras añadir repo PHP
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Instalar Apache y PHP 8.3 con todas las extensiones
+  ansible.builtin.apt:
+    name:
+      - apache2
+      - libapache2-mod-php8.3
+      - php8.3
+      - php8.3-cli
+      - php8.3-common
+      - php8.3-mysql
+      - php8.3-curl
+      - php8.3-gd
+      - php8.3-mbstring
+      - php8.3-xml
+      - php8.3-zip
+      - php8.3-bcmath
+      - php8.3-intl
+      - php8.3-imagick
+      - php8.3-soap
+      - php8.3-readline
+    state: present
+
+- name: Habilitar módulos de Apache
+  community.general.apache2_module:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - rewrite
+    - headers
+    - ssl
+  notify: restart apache
+
+- name: Configurar Apache para NamelessMC
+  ansible.builtin.copy:
+    dest: /etc/apache2/sites-available/000-default.conf
+    content: |
+      <VirtualHost *:80>
+          ServerName {{ hostify_hostname }}
+          ServerAdmin {{ admin_email }}
+          DocumentRoot /var/www/html
+
+          <Directory /var/www/html>
+              Options Indexes FollowSymLinks
+              AllowOverride All
+              Require all granted
+          </Directory>
+
+          ErrorLog ${APACHE_LOG_DIR}/error.log
+          CustomLog ${APACHE_LOG_DIR}/access.log combined
+      </VirtualHost>
+    mode: '0644'
+  notify: restart apache
+
+- name: Aumentar límites de PHP
+  ansible.builtin.lineinfile:
+    path: /etc/php/8.3/apache2/php.ini
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regexp: '^upload_max_filesize', line: 'upload_max_filesize = 100M' }
+    - { regexp: '^post_max_size', line: 'post_max_size = 100M' }
+    - { regexp: '^memory_limit', line: 'memory_limit = 256M' }
+    - { regexp: '^max_execution_time', line: 'max_execution_time = 300' }
+    - { regexp: '^date.timezone', line: 'date.timezone = {{ timezone }}' }
+  notify: restart apache
+
+- name: Iniciar y habilitar Apache
+  ansible.builtin.systemd:
+    name: apache2
+    enabled: yes
+    state: started
+root@ansible-node:~/playbook_minecraft/hostify-ansible/roles/03-webserver/tasks# 
+
+Panel de control del servidor MC 
+
+root@ansible-node:~/playbook_minecraft/hostify-ansible/roles/04-pufferpanel/tasks# cat main.yml 
+---
+# ═══════════════════════════════════════════════════════════════
+# ROL 04: PufferPanel (vía packagecloud, lo que funciona)
+# ═══════════════════════════════════════════════════════════════
+
+- name: Comprobar si PufferPanel ya está instalado
+  ansible.builtin.stat:
+    path: /usr/sbin/pufferpanel
+  register: pufferpanel_installed
+
+- name: Instalar repositorio de PufferPanel desde packagecloud
+  ansible.builtin.shell: |
+    curl -s https://packagecloud.io/install/repositories/pufferpanel/pufferpanel/script.deb.sh | bash
+  args:
+    creates: /etc/apt/sources.list.d/pufferpanel_pufferpanel.list
+  when: not pufferpanel_installed.stat.exists
+
+- name: Actualizar caché tras añadir repo PufferPanel
+  ansible.builtin.apt:
+    update_cache: yes
+  when: not pufferpanel_installed.stat.exists
+
+- name: Instalar PufferPanel
+  ansible.builtin.apt:
+    name: pufferpanel
+    state: present
+
+- name: Habilitar y arrancar PufferPanel
+  ansible.builtin.systemd:
+    name: pufferpanel
+    enabled: yes
+    state: started
+
+- name: Esperar a que PufferPanel esté disponible
+  ansible.builtin.wait_for:
+    port: "{{ pufferpanel_port }}"
+    host: 127.0.0.1
+    timeout: 60
+
+# ──────────────────────────────────────────
+# Crear usuario admin de PufferPanel
+# ──────────────────────────────────────────
+- name: Comprobar si el admin de PufferPanel ya existe
+  ansible.builtin.shell: |
+    pufferpanel user list 2>/dev/null | grep -q "{{ pufferpanel_admin_username }}"
+  register: pp_user_exists
+  failed_when: false
+  changed_when: false
+
+- name: Crear usuario admin de PufferPanel
+  ansible.builtin.shell: |
+    pufferpanel user add \
+      --admin \
+      --email "{{ pufferpanel_admin_email }}" \
+      --name "{{ pufferpanel_admin_username }}" \
+      --password "{{ pufferpanel_admin_password }}"
+  when: pp_user_exists.rc != 0
+  no_log: true
+
+- name: Mostrar info de PufferPanel
+  ansible.builtin.debug:
+    msg:
+      - "✅ PufferPanel instalado correctamente"
+      - "   URL: http://{{ hostify_ip }}:{{ pufferpanel_port }}"
+      - "   Usuario: {{ pufferpanel_admin_username }}"
+root@ansible-node:~/playbook_minecraft/hostify-ansible/roles/04-pufferpanel/tasks# 
+
+Servidor Paper + plugins + rangos 
+root@ansible-node:~/playbook_minecraft/hostify-ansible/roles/05-minecraft/tasks# cat main.yml 
+---
+# ═══════════════════════════════════════════════════════════════
+# ROL 05: Servidor Minecraft (Paper + plugins + rangos)
+# Con todas las URLs verificadas que funcionan
+# ═══════════════════════════════════════════════════════════════
+
+# ──────────────────────────────────────────
+# Crear directorios del servidor
+# ──────────────────────────────────────────
+- name: Crear estructura de directorios del servidor
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0755'
+  loop:
+    - /opt/hostify-mc
+    - /opt/hostify-mc/plugins
+    - /opt/hostify-mc/plugins/LuckPerms
+    - /opt/hostify-mc/plugins/TAB
+    - /opt/hostify-mc/plugins/Tebex
+    - /opt/hostify-mc/plugins/Essentials
+    - /opt/hostify-mc/plugins/NamelessMC
+
+# ──────────────────────────────────────────
+# Descargar Paper
+# ──────────────────────────────────────────
+- name: Descargar Paper {{ mc_paper_version }}
+  ansible.builtin.get_url:
+    url: "https://api.papermc.io/v2/projects/paper/versions/{{ mc_paper_version }}/builds/{{ mc_paper_build }}/downloads/paper-{{ mc_paper_version }}-{{ mc_paper_build }}.jar"
+    dest: /opt/hostify-mc/paper.jar
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0644'
+
+# ──────────────────────────────────────────
+# Aceptar EULA
+# ──────────────────────────────────────────
+- name: Aceptar EULA de Mojang
+  ansible.builtin.copy:
+    dest: /opt/hostify-mc/eula.txt
+    content: "eula=true\n"
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0644'
+
+# ──────────────────────────────────────────
+# server.properties (modo offline para TLauncher)
+# ──────────────────────────────────────────
+- name: Crear server.properties
+  ansible.builtin.template:
+    src: server.properties.j2
+    dest: /opt/hostify-mc/server.properties
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0644'
+
+# ──────────────────────────────────────────
+# Descargar plugins (URLs verificadas)
+# ──────────────────────────────────────────
+- name: Descargar LuckPerms
+  ansible.builtin.get_url:
+    url: "{{ luckperms_url }}"
+    dest: /opt/hostify-mc/plugins/LuckPerms.jar
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0644'
+
+- name: Descargar EssentialsX
+  ansible.builtin.get_url:
+    url: "{{ essentialsx_url }}"
+    dest: /opt/hostify-mc/plugins/EssentialsX.jar
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0644'
+
+- name: Descargar EssentialsXChat
+  ansible.builtin.get_url:
+    url: "{{ essentialsxchat_url }}"
+    dest: /opt/hostify-mc/plugins/EssentialsXChat.jar
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0644'
+
+- name: Descargar Vault
+  ansible.builtin.get_url:
+    url: "{{ vault_url }}"
+    dest: /opt/hostify-mc/plugins/Vault.jar
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0644'
+
+- name: Descargar TAB
+  ansible.builtin.get_url:
+    url: "{{ tab_url }}"
+    dest: /opt/hostify-mc/plugins/TAB.jar
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0644'
+
+- name: Descargar PlaceholderAPI
+  ansible.builtin.get_url:
+    url: "{{ placeholderapi_url }}"
+    dest: /opt/hostify-mc/plugins/PlaceholderAPI.jar
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0644'
+
+- name: Descargar Tebex plugin
+  ansible.builtin.get_url:
+    url: "{{ tebex_plugin_url }}"
+    dest: /opt/hostify-mc/plugins/Tebex.jar
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0644'
+
+# ──────────────────────────────────────────
+# Plugin NamelessMC (vía Spiget API, viene en ZIP)
+# ──────────────────────────────────────────
+- name: Descargar plugin NamelessMC desde Spiget
+  ansible.builtin.get_url:
+    url: "{{ nameless_plugin_spiget_url }}"
+    dest: /tmp/hostify-downloads/nameless-plugin.zip
+    mode: '0644'
+  register: nameless_plugin_download
+  ignore_errors: yes
+
+- name: Crear directorio temporal para NamelessMC
+  ansible.builtin.file:
+    path: /tmp/hostify-downloads/nameless-plugin
+    state: directory
+    mode: '0755'
+  when: nameless_plugin_download is succeeded
+
+- name: Descomprimir plugin NamelessMC
+  ansible.builtin.unarchive:
+    src: /tmp/hostify-downloads/nameless-plugin.zip
+    dest: /tmp/hostify-downloads/nameless-plugin/
+    remote_src: yes
+  when: nameless_plugin_download is succeeded
+  ignore_errors: yes
+
+- name: Buscar el JAR de Paper del plugin NamelessMC
+  ansible.builtin.find:
+    paths: /tmp/hostify-downloads/nameless-plugin/
+    patterns: "*Paper*.jar"
+    recurse: yes
+  register: nameless_jar_search
+  when: nameless_plugin_download is succeeded
+  ignore_errors: yes
+
+- name: Copiar el JAR de Paper a la carpeta de plugins
+  ansible.builtin.copy:
+    src: "{{ nameless_jar_search.files[0].path }}"
+    dest: /opt/hostify-mc/plugins/Nameless-Plugin.jar
+    remote_src: yes
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0644'
+  when:
+    - nameless_jar_search is defined
+    - nameless_jar_search.files is defined
+    - nameless_jar_search.files | length > 0
+  ignore_errors: yes
+
+- name: AVISO si plugin NamelessMC no se descargó
+  ansible.builtin.debug:
+    msg:
+      - "⚠️  El plugin de NamelessMC no se ha podido descargar automáticamente."
+      - "    Spiget puede tener limitación de rate. Descárgalo manualmente:"
+      - "    https://www.spigotmc.org/resources/nameless-plugin-for-v2.59032/"
+      - "    Sube el JAR de Paper a /opt/hostify-mc/plugins/Nameless-Plugin.jar"
+  when: nameless_plugin_download is failed or nameless_jar_search is failed
+
+# ──────────────────────────────────────────
+# Configuraciones de plugins
+# ──────────────────────────────────────────
+- name: Configurar TAB con scoreboard HOSTIFY
+  ansible.builtin.template:
+    src: tab-config.yml.j2
+    dest: /opt/hostify-mc/plugins/TAB/config.yml
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0644'
+
+- name: Configurar Tebex con secret key
+  ansible.builtin.template:
+    src: tebex-config.yml.j2
+    dest: /opt/hostify-mc/plugins/Tebex/config.yml
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0644'
+
+- name: Configurar plugin NamelessMC
+  ansible.builtin.template:
+    src: nameless-main.yaml.j2
+    dest: /opt/hostify-mc/plugins/NamelessMC/main.yaml
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0644'
+
+# ──────────────────────────────────────────
+# LuckPerms: 9 rangos preconfigurados
+# Se importarán al iniciar el servidor con: lp import hostify-ranks
+# ──────────────────────────────────────────
+- name: Crear directorio json-backup de LuckPerms
+  ansible.builtin.file:
+    path: /opt/hostify-mc/plugins/LuckPerms/json-backup
+    state: directory
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0755'
+
+- name: Crear archivo de import de los 9 rangos LuckPerms
+  ansible.builtin.template:
+    src: luckperms-import.json.j2
+    dest: /opt/hostify-mc/plugins/LuckPerms/json-backup/hostify-ranks.json
+    owner: pufferpanel
+    group: pufferpanel
+    mode: '0644'
+
+# ──────────────────────────────────────────
+# Mostrar info final
+# ──────────────────────────────────────────
+- name: Mostrar info del servidor Minecraft
+  ansible.builtin.debug:
+    msg:
+      - "✅ Servidor Minecraft preparado en /opt/hostify-mc"
+      - "   Plugins descargados en /opt/hostify-mc/plugins/"
+      - ""
+      - "   Próximos pasos manuales (rápidos):"
+      - "   1. Entra a PufferPanel: http://{{ hostify_ip }}:{{ pufferpanel_port }}"
+      - "   2. Crea un servidor y apunta el directorio a /opt/hostify-mc"
+      - "   3. Arranca el servidor"
+      - "   4. Importa los rangos: lp import hostify-ranks"
+      - "   5. Conéctate desde TLauncher: {{ hostify_ip }}:25565"
+root@ansible-node:~/playbook_minecraft/hostify-ansible/roles/05-minecraft/tasks# 
+
+Web NamelessMC + módulo Tebex 
+root@ansible-node:~/playbook_minecraft/hostify-ansible/roles/06-namelessmc/tasks# cat main.yml 
+---
+# ═══════════════════════════════════════════════════════════════
+# ROL 06: NamelessMC web
+# Descarga, descomprime y deja todo listo para el instalador web
+# ═══════════════════════════════════════════════════════════════
+# NOTA: NamelessMC necesita pasar por un instalador web (5 pantallas
+# de click). El playbook deja TODO listo para que el usuario solo
+# tenga que ir a http://IP/install.php y hacer clic en Next varias veces.
+# ═══════════════════════════════════════════════════════════════
+
+# ──────────────────────────────────────────
+# Descargar NamelessMC
+# ──────────────────────────────────────────
+- name: Descargar NamelessMC (versión latest con dependencias)
+  ansible.builtin.get_url:
+    url: "{{ namelessmc_url }}"
+    dest: /tmp/hostify-downloads/namelessmc.zip
+    mode: '0644'
+
+- name: Comprobar si NamelessMC ya está instalado
+  ansible.builtin.stat:
+    path: /var/www/html/core/config.php
+  register: nameless_existing
+
+- name: Limpiar /var/www/html (solo si NamelessMC no estaba instalado)
+  ansible.builtin.shell: |
+    rm -rf /var/www/html/*
+    rm -rf /var/www/html/.[!.]*
+  args:
+    executable: /bin/bash
+  when: not nameless_existing.stat.exists
+  changed_when: true
+
+- name: Asegurar que /var/www/html existe
+  ansible.builtin.file:
+    path: /var/www/html
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Descomprimir NamelessMC en /var/www/html
+  ansible.builtin.unarchive:
+    src: /tmp/hostify-downloads/namelessmc.zip
+    dest: /var/www/html
+    remote_src: yes
+    owner: www-data
+    group: www-data
+  when: not nameless_existing.stat.exists
+
+# ──────────────────────────────────────────
+# Permisos
+# ──────────────────────────────────────────
+- name: Establecer propiedad de /var/www/html
+  ansible.builtin.file:
+    path: /var/www/html
+    state: directory
+    owner: www-data
+    group: www-data
+    recurse: yes
+
+- name: Permisos de escritura en directorios de cache/uploads
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0775'
+  loop:
+    - /var/www/html/cache
+    - /var/www/html/uploads
+    - /var/www/html/custom
+    - /var/www/html/core/storage
+  ignore_errors: yes
+
+# ──────────────────────────────────────────
+# Descargar módulo Tebex (lo dejamos listo para activar)
+# ──────────────────────────────────────────
+- name: Descargar módulo Nameless-Tebex
+  ansible.builtin.get_url:
+    url: "{{ nameless_tebex_url }}"
+    dest: /tmp/hostify-downloads/nameless-tebex.zip
+    mode: '0644'
+
+- name: Crear directorio para descomprimir
+  ansible.builtin.file:
+    path: /tmp/hostify-downloads/nameless-tebex
+    state: directory
+    mode: '0755'
+
+- name: Descomprimir módulo Tebex
+  ansible.builtin.unarchive:
+    src: /tmp/hostify-downloads/nameless-tebex.zip
+    dest: /tmp/hostify-downloads/nameless-tebex
+    remote_src: yes
+
+- name: Asegurar que existe la carpeta de módulos
+  ansible.builtin.file:
+    path: /var/www/html/modules
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Comprobar si existe el módulo Tebex en el ZIP
+  ansible.builtin.stat:
+    path: /tmp/hostify-downloads/nameless-tebex/Nameless-Tebex-master/upload/modules/Tebex
+  register: tebex_module_stat
+
+- name: Copiar módulo Tebex a NamelessMC
+  ansible.builtin.copy:
+    src: /tmp/hostify-downloads/nameless-tebex/Nameless-Tebex-master/upload/modules/Tebex/
+    dest: /var/www/html/modules/Tebex/
+    remote_src: yes
+    owner: www-data
+    group: www-data
+    mode: preserve
+  when: tebex_module_stat.stat.exists
+
+- name: Comprobar si existe la plantilla Tebex en el ZIP
+  ansible.builtin.stat:
+    path: /tmp/hostify-downloads/nameless-tebex/Nameless-Tebex-master/upload/custom/templates/DefaultRevamp/tebex
+  register: tebex_template_stat
+
+- name: Crear directorio de plantilla DefaultRevamp si no existe
+  ansible.builtin.file:
+    path: /var/www/html/custom/templates/DefaultRevamp
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Copiar plantilla Tebex (frontend)
+  ansible.builtin.copy:
+    src: /tmp/hostify-downloads/nameless-tebex/Nameless-Tebex-master/upload/custom/templates/DefaultRevamp/tebex/
+    dest: /var/www/html/custom/templates/DefaultRevamp/tebex/
+    remote_src: yes
+    owner: www-data
+    group: www-data
+    mode: preserve
+  when: tebex_template_stat.stat.exists
+
+- name: Comprobar si existe la plantilla Tebex del panel
+  ansible.builtin.stat:
+    path: /tmp/hostify-downloads/nameless-tebex/Nameless-Tebex-master/upload/custom/panel_templates/Default/tebex
+  register: tebex_panel_stat
+
+- name: Crear directorio del panel si no existe
+  ansible.builtin.file:
+    path: /var/www/html/custom/panel_templates/Default
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+  when: tebex_panel_stat.stat.exists
+
+- name: Copiar plantilla Tebex (panel admin)
+  ansible.builtin.copy:
+    src: /tmp/hostify-downloads/nameless-tebex/Nameless-Tebex-master/upload/custom/panel_templates/Default/tebex/
+    dest: /var/www/html/custom/panel_templates/Default/tebex/
+    remote_src: yes
+    owner: www-data
+    group: www-data
+    mode: preserve
+  when: tebex_panel_stat.stat.exists
+
+# ──────────────────────────────────────────
+# Limpiar caché
+# ──────────────────────────────────────────
+- name: Limpiar caché de NamelessMC
+  ansible.builtin.shell: |
+    rm -rf /var/www/html/cache/*
+  args:
+    executable: /bin/bash
+  changed_when: false
+  ignore_errors: yes
+
+- name: Reiniciar Apache
+  ansible.builtin.systemd:
+    name: apache2
+    state: restarted
+
+# ──────────────────────────────────────────
+# Instrucciones para el usuario
+# ──────────────────────────────────────────
+- name: Mostrar instrucciones del instalador web
+  ansible.builtin.debug:
+    msg:
+      - "═══════════════════════════════════════════════════════════"
+      - "✅ NamelessMC preparado. ÚLTIMO PASO MANUAL (rápido):"
+      - "═══════════════════════════════════════════════════════════"
+      - ""
+      - "  Abre en tu navegador:"
+      - "    http://{{ hostify_ip }}/install.php"
+      - ""
+      - "  Y rellena con estos datos (apúntalos):"
+      - ""
+      - "  ─── General Configuration ───"
+      - "  Hostname:       {{ hostify_ip }}"
+      - "  Friendly URLs:  Disabled"
+      - ""
+      - "  ─── Database Configuration ───"
+      - "  Address:    127.0.0.1"
+      - "  Port:       3306"
+      - "  Username:   {{ nameless_db_user }}"
+      - "  Password:   {{ nameless_db_password }}"
+      - "  DB Name:    {{ nameless_db_name }}"
+      - ""
+      - "  ─── Site Configuration ───"
+      - "  Site Name:    Hostify"
+      - "  Email:        {{ admin_email }}"
+      - "  Language:     Spanish"
+      - "  Timezone:     {{ timezone }}"
+      - ""
+      - "  ─── Admin Account ───"
+      - "  Username:  {{ admin_username }}"
+      - "  Email:     {{ admin_email }}"
+      - "  Password:  {{ admin_password }}"
+      - ""
+      - "  ─── Select Modules ───"
+      - "  Marca todos los módulos disponibles (incluyendo Tebex)"
+      - ""
+      - "  Después de instalar:"
+      - "  - El módulo Tebex ya está colocado, solo actívalo en StaffCP > Módulos"
+      - "  - Configura la secret key de Tebex en StaffCP > Tebex"
+      - "═══════════════════════════════════════════════════════════"
+root@ansible-node:~/playbook_minecraft/hostify-ansible/roles/06-namelessmc/tasks# 
+Widget de IA con Gemini 
+root@ansible-node:~/playbook_minecraft/hostify-ansible/roles/07-chatbot/tasks# cat main.yml 
+---
+# ═══════════════════════════════════════════════════════════════
+# ROL 07: Chatbot Gemini
+# Widget flotante con IA en la web
+# ═══════════════════════════════════════════════════════════════
+
+- name: Crear proxy PHP para Gemini API
+  ansible.builtin.template:
+    src: gemini-proxy.php.j2
+    dest: /var/www/html/gemini-proxy.php
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Asegurar que existe el directorio de la plantilla DefaultRevamp
+  ansible.builtin.file:
+    path: /var/www/html/custom/templates/DefaultRevamp
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Crear plantilla del widget hostify-bot.tpl
+  ansible.builtin.template:
+    src: hostify-bot.tpl.j2
+    dest: /var/www/html/custom/templates/DefaultRevamp/hostify-bot.tpl
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Verificar si footer.tpl existe
+  ansible.builtin.stat:
+    path: /var/www/html/custom/templates/DefaultRevamp/footer.tpl
+  register: footer_file
+
+- name: Inyectar widget en footer.tpl (si existe)
+  ansible.builtin.lineinfile:
+    path: /var/www/html/custom/templates/DefaultRevamp/footer.tpl
+    insertbefore: '</body>'
+    line: "{include file='hostify-bot.tpl'}"
+    state: present
+  when: footer_file.stat.exists
+
+- name: Limpiar caché de NamelessMC
+  ansible.builtin.shell: |
+    rm -rf /var/www/html/cache/*
+  args:
+    executable: /bin/bash
+  changed_when: false
+  ignore_errors: yes
+
+- name: Mostrar info del chatbot
+  ansible.builtin.debug:
+    msg:
+      - "✅ Chatbot Gemini instalado"
+      - "   Modelo: {{ gemini_model }}"
+      - "   Aparecerá como burbuja verde abajo a la derecha en la web"
+      - "   (Solo después de completar el instalador web de NamelessMC)"
+root@ansible-node:~/playbook_minecraft/hostify-ansible/roles/07-chatbot/tasks# 
+

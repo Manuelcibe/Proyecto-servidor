@@ -1,0 +1,13 @@
+01-system: Prepara el sistema base. Ajusta el nombre de la maquina, la zona horaria y descarga utilidades esenciales, destacando la instalación de Java 21 desde repositorios externos (requisito para el servidor de Minecraft moderno).
+
+02-database: Instala el motor de base de datos MariaDB. Asegura la cuenta root y crea la base de datos y el usuario especifico que usara la pagina web mas adelante.
+
+03-webserver: Instala Apache y PHP 8.3. Configura los limites de subida de archivos y memoria, dejando el entorno web listo para alojar paginas dinamicas y foros pesados.
+
+04-pufferpanel: Instala el panel de control PufferPanel (la interfaz grafica para iniciar o apagar el servidor de Minecraft) y crea su primer usuario administrador.
+
+05-minecraft: Descarga el motor del juego (Paper), acepta las licencias de Mojang y prepara la estructura de carpetas. Tambien descarga automaticamente todos los plugins requeridos (LuckPerms, Essentials, TAB, Vault, Tebex, Nameless) y deja listos los archivos base para los rangos del servidor.
+
+06-namelessmc: Descarga los archivos del foro web NamelessMC y su modulo de tienda Tebex. Configura los permisos de escritura en la carpeta de Apache para que el dueño solo tenga que entrar al navegador y completar la instalación visual con un par de clics.
+
+07-chatbot: Sube al servidor web un archivo proxy en PHP para comunicarse de forma segura con la API de Gemini. Finalmente, inyecta el codigo del widget del chat en la plantilla base de la pagina web para que los usuarios puedan interactuar con el.
