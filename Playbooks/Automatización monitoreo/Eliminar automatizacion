@@ -1,0 +1,77 @@
+Archivo playbook:
+
+---
+- name: Preparacion
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars_prompt:
+    - name: ips_extra
+      prompt: "De qué otras máquinas quieres borrar Node Exporter? Pon sus IPs separadas por comas. Si ninguna, pulsa Enter:"
+      private: no
+  tasks:
+    - name: Registrar maquinas extra en la memoria de Ansible
+      add_host:
+        name: "{{ item | trim }}"
+        groups: nodos_extra
+        ansible_user: manu
+      loop: "{{ ips_extra.split(',') }}"
+      when: ips_extra | length > 0 and item | trim != ''
+
+- name: Limpiar la Maquina Jefe (Borrar Grafana, Prometheus y Node Exporter)
+  hosts: localhost
+  connection: local
+  become: yes
+  tasks:
+    - name: Detener y deshabilitar servicios del Jefe
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: no
+      loop: [prometheus, prometheus-node-exporter, grafana-server]
+      ignore_errors: yes # Ignora el error si el servicio ya no existe
+
+    - name: Desinstalar paquetes y dependencias no utilizadas
+      apt:
+        name: [grafana, prometheus, prometheus-node-exporter]
+        state: absent
+        purge: yes
+        autoremove: yes
+
+    - name: Eliminar repositorio de Grafana, llave GPG y carpetas residuales
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/apt/sources.list.d/grafana.list
+        - /usr/share/keyrings/grafana.gpg
+        - /etc/prometheus
+        - /etc/grafana
+        - /var/lib/prometheus
+        - /var/lib/grafana
+        - /var/log/grafana
+        - /var/log/prometheus
+
+    - name: Actualizar cache de apt despues de borrar el repositorio
+      apt:
+        update_cache: yes
+
+- name: Desinstalar Node Exporter en las maquinas extra
+  hosts: nodos_extra
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: Detener y deshabilitar servicio node-exporter
+      systemd:
+        name: prometheus-node-exporter
+        state: stopped
+        enabled: no
+      ignore_errors: yes
+
+    - name: Desinstalar node-exporter y limpiar
+      apt:
+        name: prometheus-node-exporter
+        state: absent
+        purge: yes
+        autoremove: yes
+
