@@ -1,3 +1,6 @@
-Este texto representa el archivo de configuración del servicio de Docker para Systemd (docker.service).
-Su proposito principal es definir como el sistema operativo anfitrión (Linux) debe arrancar,
-administrar y mantener en funcionamiento el motor de contenedores (dockerd) como un proceso en segundo plano.
+Los fragmentos de codigo JSON detallan la configuración estructural de contenedor Docker administrado mediante Portainer.
+Se trata de una plantilla estandarizada utilizada para desplegar entornos web aislados para distintos usuarios.
+
+Se trata de un entorno de practicas web individualizado, seguro y ligero.
+Esta diseñado para que el usuario solo deba de colocar sus archivos en una carpeta especifica,
+mientras que Docker y Portainer se encargan del alojamiento y la exposición del contenido a traves de un puerto dedicado.
