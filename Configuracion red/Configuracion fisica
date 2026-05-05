@@ -3,11 +3,15 @@ Switch
 enable
 configure terminal
 vlan 2
+exit
 vlan 3
-vlan 5
-vlan 6
+exit
 vlan 10
 exit
+interface gi0/6
+switchport mode trunk
+exit
+
 
 R1 ORANGE
 interface FastEthernet0/0
