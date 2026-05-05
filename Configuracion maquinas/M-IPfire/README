@@ -1,4 +1,4 @@
-Esta máquina actúa como el firewall perimetral de nuestra topología. Se ha implementado utilizando el modelo de 4 zonas (CONFIG_TYPE=4) para aislar correctamente el tráfico. Todas las interfaces de red están virtualizadas utilizando controladores virtio_net para maximizar el rendimiento.
+Esta fue de las primeras maquinas y con sentido ya que es la Ipfire que da seguridad a nuestra red y aparte reparte el internet, dentro de ello hemos hecho 4 zonas con sus ip que se pueden ver a continuacion:
 
 Configuración de Zonas de Red
 
