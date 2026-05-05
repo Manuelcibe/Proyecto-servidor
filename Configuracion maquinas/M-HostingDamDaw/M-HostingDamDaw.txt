@@ -1,4 +1,4 @@
-Config Portainer Grupo 1
+cat /root/config_jeffbezos.json (Grup 1)
 
 [
     {
@@ -288,12 +288,18 @@ Config Portainer Grupo 1
 ]
 
 
-Config Portainer Grupo 2
 
+
+
+
+
+cat /root/config_stevejobs.json (Grup 2)
+
+cat /root/config_stevejobs.json
 [
     {
-        "Id": "936fcccbc603539c8593b5ea95b765f8e7e6488cc9a1b8168844a7cf600ad8fd",
-        "Created": "2026-04-16T16:30:28.03144503Z",
+        "Id": "9da262738af970cc2274ffea95ac3aa84cd247daaa47aeb0ea8bb708637512d1",
+        "Created": "2026-04-16T16:50:10.18368598Z",
         "Path": "httpd-foreground",
         "Args": [],
         "State": {
@@ -306,15 +312,15 @@ Config Portainer Grupo 2
             "Pid": 0,
             "ExitCode": 0,
             "Error": "",
-            "StartedAt": "2026-05-05T19:21:59.510255683Z",
-            "FinishedAt": "2026-05-05T19:31:39.113143637Z"
+            "StartedAt": "2026-05-05T19:22:00.220873542Z",
+            "FinishedAt": "2026-05-05T19:31:39.122734467Z"
         },
         "Image": "sha256:1330ad8e3398d39471a635a8fe5cec23f7edc6f7f1d9f206cbe1d76cce71e589",
-        "ResolvConfPath": "/var/lib/docker/containers/936fcccbc603539c8593b5ea95b765f8e7e6488cc9a1b8168844a7cf600ad8fd/resolv.conf",
-        "HostnamePath": "/var/lib/docker/containers/936fcccbc603539c8593b5ea95b765f8e7e6488cc9a1b8168844a7cf600ad8fd/hostname",
-        "HostsPath": "/var/lib/docker/containers/936fcccbc603539c8593b5ea95b765f8e7e6488cc9a1b8168844a7cf600ad8fd/hosts",
-        "LogPath": "/var/lib/docker/containers/936fcccbc603539c8593b5ea95b765f8e7e6488cc9a1b8168844a7cf600ad8fd/936fcccbc603539c8593b5ea95b765f8e7e6488cc9a1b8168844a7cf600ad8fd-json.log",
-        "Name": "/JeffBezos",
+        "ResolvConfPath": "/var/lib/docker/containers/9da262738af970cc2274ffea95ac3aa84cd247daaa47aeb0ea8bb708637512d1/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/9da262738af970cc2274ffea95ac3aa84cd247daaa47aeb0ea8bb708637512d1/hostname",
+        "HostsPath": "/var/lib/docker/containers/9da262738af970cc2274ffea95ac3aa84cd247daaa47aeb0ea8bb708637512d1/hosts",
+        "LogPath": "/var/lib/docker/containers/9da262738af970cc2274ffea95ac3aa84cd247daaa47aeb0ea8bb708637512d1/9da262738af970cc2274ffea95ac3aa84cd247daaa47aeb0ea8bb708637512d1-json.log",
+        "Name": "/SteveJobs",
         "RestartCount": 0,
         "Driver": "overlay2",
         "Platform": "linux",
@@ -324,7 +330,7 @@ Config Portainer Grupo 2
         "ExecIDs": null,
         "HostConfig": {
             "Binds": [
-                "/opt/alumnos/JeffBezos:/usr/local/apache2/htdocs/"
+                "/opt/alumnos/SteveJobs:/usr/local/apache2/htdocs/"
             ],
             "ContainerIDFile": "",
             "LogConfig": {
@@ -339,7 +345,7 @@ Config Portainer Grupo 2
                 "80/tcp": [
                     {
                         "HostIp": "",
-                        "HostPort": "8081"
+                        "HostPort": "8082"
                     }
                 ]
             },
@@ -485,18 +491,18 @@ Config Portainer Grupo 2
         },
         "GraphDriver": {
             "Data": {
-                "ID": "936fcccbc603539c8593b5ea95b765f8e7e6488cc9a1b8168844a7cf600ad8fd",
-                "LowerDir": "/var/lib/docker/overlay2/1d3e60a264064f0b6c67244fe30b0b7beaa5ba7671d92c6a13c7b963577c1832-init/diff:/var/lib/docker/overlay2/898775b0ecfd81873a9b983a8140b50677cff90ae62e3cfc93bd321fbb5e96bb/diff:/var/lib/docker/overlay2/57d9e1abafd5869bf36ec329b4466bfee7d6a94baa29cdce57f3d058028df3c4/diff:/var/lib/docker/overlay2/b01ffad2fa1a5c2ee68c7ba501d02c08a3574cde016bf415a657d5be6001152d/diff:/var/lib/docker/overlay2/b20e3f463ca03116832febf65a04ad9c31d0b11ddb055376965b730cd0fd0a74/diff:/var/lib/docker/overlay2/a9e5ce1e23d7f1242aacd734ce86c72d3e49db6dc7a461f9991becd5a1936852/diff:/var/lib/docker/overlay2/473d3d85fa89896596fdd6bb366f2632c9ef94ca557db75f079c96ccc2b263e4/diff:/var/lib/docker/overlay2/043d409c233bacc65b70f6e238b190ab8363fa6a6dc574f723cf3a00e76ac59d/diff",
-                "MergedDir": "/var/lib/docker/overlay2/1d3e60a264064f0b6c67244fe30b0b7beaa5ba7671d92c6a13c7b963577c1832/merged",
-                "UpperDir": "/var/lib/docker/overlay2/1d3e60a264064f0b6c67244fe30b0b7beaa5ba7671d92c6a13c7b963577c1832/diff",
-                "WorkDir": "/var/lib/docker/overlay2/1d3e60a264064f0b6c67244fe30b0b7beaa5ba7671d92c6a13c7b963577c1832/work"
+                "ID": "9da262738af970cc2274ffea95ac3aa84cd247daaa47aeb0ea8bb708637512d1",
+                "LowerDir": "/var/lib/docker/overlay2/af93080300b7e4e3a193db5c79c768a76c0ac7bbfe25954f8e6335244540856d-init/diff:/var/lib/docker/overlay2/898775b0ecfd81873a9b983a8140b50677cff90ae62e3cfc93bd321fbb5e96bb/diff:/var/lib/docker/overlay2/57d9e1abafd5869bf36ec329b4466bfee7d6a94baa29cdce57f3d058028df3c4/diff:/var/lib/docker/overlay2/b01ffad2fa1a5c2ee68c7ba501d02c08a3574cde016bf415a657d5be6001152d/diff:/var/lib/docker/overlay2/b20e3f463ca03116832febf65a04ad9c31d0b11ddb055376965b730cd0fd0a74/diff:/var/lib/docker/overlay2/a9e5ce1e23d7f1242aacd734ce86c72d3e49db6dc7a461f9991becd5a1936852/diff:/var/lib/docker/overlay2/473d3d85fa89896596fdd6bb366f2632c9ef94ca557db75f079c96ccc2b263e4/diff:/var/lib/docker/overlay2/043d409c233bacc65b70f6e238b190ab8363fa6a6dc574f723cf3a00e76ac59d/diff",
+                "MergedDir": "/var/lib/docker/overlay2/af93080300b7e4e3a193db5c79c768a76c0ac7bbfe25954f8e6335244540856d/merged",
+                "UpperDir": "/var/lib/docker/overlay2/af93080300b7e4e3a193db5c79c768a76c0ac7bbfe25954f8e6335244540856d/diff",
+                "WorkDir": "/var/lib/docker/overlay2/af93080300b7e4e3a193db5c79c768a76c0ac7bbfe25954f8e6335244540856d/work"
             },
             "Name": "overlay2"
         },
         "Mounts": [
             {
                 "Type": "bind",
-                "Source": "/opt/alumnos/JeffBezos",
+                "Source": "/opt/alumnos/SteveJobs",
                 "Destination": "/usr/local/apache2/htdocs",
                 "Mode": "",
                 "RW": true,
@@ -504,7 +510,7 @@ Config Portainer Grupo 2
             }
         ],
         "Config": {
-            "Hostname": "936fcccbc603",
+            "Hostname": "9da262738af9",
             "Domainname": "",
             "User": "",
             "AttachStdin": false,
@@ -576,3 +582,6 @@ Config Portainer Grupo 2
         }
     }
 ]
+
+
+

@@ -1,6 +1,6 @@
-Los fragmentos de codigo JSON detallan la configuración estructural de contenedor Docker administrado mediante Portainer.
-Se trata de una plantilla estandarizada utilizada para desplegar entornos web aislados para distintos usuarios.
-
-Se trata de un entorno de practicas web individualizado, seguro y ligero.
-Esta diseñado para que el usuario solo deba de colocar sus archivos en una carpeta especifica,
-mientras que Docker y Portainer se encargan del alojamiento y la exposición del contenido a traves de un puerto dedicado.
+Este documento describe la configuración de una infraestructura centralizada para alojar paginas web de varios alumnos al mismo tiempo.
+Servidores individuales: Despliega un contenedor Apache ultraligero e independiente para cada alumno (ej. JeffBezos, SteveJobs).
+Carpetas privadas: Vincula una carpeta local del servidor principal con la web del contenedor, permitiendo al alumno ver sus cambios en vivo sin tocar configuraciones complejas.
+Aislamiento total: Los usuarios no comparten archivos, por lo que es imposible que se borren cosas por accidente entre ellos.
+Acceso sin conflictos: A cada alumno se le asigna un puerto unico (como 8081 o 8082) para que todos los proyectos funcionen a la vez sin chocar.
+Fácil administración: Permite a los profesores apagar, reiniciar o recrear los entornos en segundos desde Portainer sin perder los archivos de los alumnos.
