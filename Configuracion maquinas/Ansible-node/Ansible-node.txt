@@ -1,0 +1,7 @@
+Estructura de carpetas dentro del contenedor
+
+root@ansible-node:~# ls
+Playbook_automatizacion_monitoreo  ansible_proyecto  playbook_minecraft  playbooks_ansible  playbooks_ipfire  playbooks_monitorizacion
+root@ansible-node:~# 
+
+Pero no se pone nada mas porque eso ya esta en Playbooks
