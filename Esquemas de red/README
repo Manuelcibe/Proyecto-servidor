@@ -1,29 +1,28 @@
 Configuracion de Routers y Switch
 
 Switch
-Gestion de la segmentación física mediante VLANs y enlace troncal.
-Puerto Gi0/1: Conectado (VLAN 2)
-Puerto Gi0/2: Conectado (VLAN 3)
-Puerto Gi0/3: Conectado (VLAN 10)
-Puerto Gi0/4: Conectado (VLAN 10)
-Puerto Gi0/6: Conectado (Modo Trunk)
+Creacion Vlans
+Puerto Gi0/1: (VLAN 2)
+Puerto Gi0/2: (VLAN 3)
+Puerto Gi0/3: (VLAN 10)
+Puerto Gi0/4: (VLAN 10)
 
 Router 2 Zona GREEN
-Actua como enrutador para la red interna segura.
+Red interna segura.
 Interfaz: FastEthernet0/0
 Direccion IP: 192.168.20.3
 Mascara de Red: 255.255.255.224
 Gateway: 192.168.20.2
 
 Router 1 Zona ORANGE
-Actua como enrutador para la zona desmilitarizada (DMZ).
+DMZ.
 Interfaz: FastEthernet0/0
 Dirección IP: 192.168.10.2
 Mascara de Red: 255.255.255.240
 Gateway: 192.168.10.1
 
 Router 3 Zona BLUE
-Actua como enrutador para la red de invitados o inalámbrica.
+Red de invitados o remota.
 Interfaz: FastEthernet0/0
 Dirección IP: 192.168.30.2
 Mascara de Red: 255.255.255.192
