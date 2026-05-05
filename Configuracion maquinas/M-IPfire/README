@@ -2,32 +2,32 @@ Esta máquina actúa como el firewall perimetral de nuestra topología. Se ha im
 
 Configuración de Zonas de Red
 
-Zona RED (WAN / Internet)
+Zona RED (WAN)
 Esta es la interfaz externa del firewall, encargada de la salida a Internet.
 Interfaz: red0
-Modo de Configuración: DHCP (Obtiene la IP dinámicamente)
+Modo de Configuración: DHCP
 DHCP Rapid Commit: Activado
 Hostname: ipfire
 Dirección MAC: bc:24:11:db:b6:5a
 
-Zona GREEN (LAN / Red Interna Segura)
-Esta zona corresponde a nuestra red local privada. Aquí es donde se conectan los equipos de confianza y el tráfico está protegido por defecto.
+Zona GREEN (LAN)
+Es la red privada local donde estan nuestras maquinas connectadas.
 Interfaz: green0
 Dirección IP: 192.168.20.2
-Máscara de Red: 255.255.255.224 (Subred /27)
+Máscara de Red: 255.255.255.224 (/27)
 Dirección de Red: 192.168.20.0
 Dirección MAC: bc:24:11:22:e5:7e
 
-Zona ORANGE (DMZ / Zona Desmilitarizada)
-Red aislada destinada a ubicar los servidores o servicios que deben ser accesibles desde el exterior, protegiendo así la red GREEN de posibles ataques.
+Zona ORANGE (DMZ)
+Red que sirve para poner los servidores que tienen que estar vistos del exterior.
 Interfaz: orange0
 Dirección IP: 192.168.10.1
-Máscara de Red: 255.255.255.248 (Subred /29)
+Máscara de Red: 255.255.255.248 (/29)
 Dirección de Red: 192.168.10.0
 Dirección MAC: bc:24:11:3d:65:19
 
-Zona BLUE (WLAN / Red Inalámbrica o Invitados)
-Segmento de red separado diseñado para dispositivos invitados o conexiones inalámbricas. Tiene reglas estrictas para no acceder a la red GREEN sin autorización.
+Zona BLUE (WLAN)
+Zona de red para dispositivos invitados o conexiones remotas.
 Interfaz: blue0
 Dirección IP: 192.168.30.1
 Máscara de Red: 255.255.255.192 (Subred /26)
