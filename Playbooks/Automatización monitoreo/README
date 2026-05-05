@@ -1,0 +1,25 @@
+Descripción General
+Este playbook automatiza el despliegue de un entorno de monitorización completo. Configura una máquina principal "Jefe" con Grafana y Prometheus, y permite instalar automaticamente el agente de métricas (Node Exporter) en otras máquinas de la red para centralizar su monitorización.
+
+Componentes
+ Maquina nodo: Grafana que es visualizacion, Prometheus que es la base de datos el que recopila la informacion y Node Exporter.
+ Nodos Extra: Node Exporter.
+
+Ejecución
+1. Preparación: Al lanzar el script, te preguntará por consola si quieres añadir maquinas extra, puedes escribir las IPs separadas por comas (ej: 192.168.1.108, 192.168.1.109) o pulsar Enter para monitorizar solo la maquina local.
+2. Configuración del node: 
+ Instala Prometheus y Node Exporter desde los repositorios base.
+ Añade el repositorio oficial de Grafana y lo instala.
+ Genera el archivo prometheus.yml añadiendo dinámicamente los "targets" que son las IPs extra que hayas puesto.
+ Auto-provisiona Grafana creando el archivo datasources/prometheus.yml, conectándolo automáticamente a Prometheus sin que tengas que hacerlo a mano en la web.
+ Arranca y habilita todos los servicios para que inicien con el sistema.
+3. Despliegue en Nodos Extra: Se conecta por SSH a las IPs indicadas utilizando el usuario "X", instala el paquete prometheus-node-exporter y arranca el servicio.
+
+Puertos
+ Grafana: Puerto 3000
+ Prometheus: Puerto 9090
+ Node Exporter: Puerto 9100
+
+Ejecución
+ Para lanzar esta automatización, ejecuta el comando en la terminal donde este el archivo:
+ ansible-playbook playbook.yml --ask-become-pass
