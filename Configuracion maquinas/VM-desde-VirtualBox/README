@@ -1,0 +1,11 @@
+Este documento explica de forma general la infraestructura de monitorización implementada en la red.
+El sistema se encarga de vigilar la salud de todos los servidores en tiempo real,
+basandose en una arquitectura donde un cerebro central pide los datos constantemente a pequeños agentes instalados en cada maquina.
+
+El primer bloque de texto corresponde a la configuración de Prometheus.
+Este programa actua como el director de toda la operación.
+En lugar de esperar a que las maquinas le envien reportes, Prometheus toma la iniciativa y contacta a cada equipo cada 15 segundos para extraer sus metricas vitales.
+
+El segundo bloque pertenece a la configuración de Node Exporter.
+Para que Prometheus pueda leer datos como el uso del procesador,
+la memoria RAM consumida o el espacio libre en disco, necesita un traductor en cada maquina. Ese traductor es Node Exporter.

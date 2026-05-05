@@ -1,0 +1,40 @@
+prometheus 
+debian@debian:/etc/prometheus$ cat prometheus.yml
+global:
+  scrape_interval: 15s # Frecuencia de recolección de datos
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'nodos_linux'
+    static_configs:
+      # Sustituye estas IPs por las IPs reales de tus máquinas
+      - targets: ['localhost:9100', '192.168.20.2:9100', '192.168.20.10:9100', '192.168.10.10:9100' ]
+  - job_name: 'minecraft'
+    static_configs:
+      - targets: ['192.168.200.21:9100']
+  - job_name: 'ipfire'
+    static_configs:
+      - targets: ['192.168.20.2:9100']
+
+debian@debian:/etc/prometheus$ 
+
+node-exporter
+debian@debian:/etc/systemd/system$ cat node_exporter.service
+[Unit]
+Description=Node Exporter
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+ExecStart=/usr/local/bin/node_exporter
+
+[Install]
+WantedBy=multi-user.target
+debian@debian:/etc/systemd/system$
+
