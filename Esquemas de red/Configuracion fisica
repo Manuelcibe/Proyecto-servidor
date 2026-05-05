@@ -1,0 +1,30 @@
+Switch
+enable
+configure terminal
+vlan 2
+vlan 3
+vlan 5
+vlan 6
+vlan 10
+exit
+
+R1 ORANGE
+interface FastEthernet0/0
+ip address 192.168.10.2 255.255.255.240
+no shutdown
+exit
+ip route 0.0.0.0 0.0.0.0 192.168.10.1
+
+R2 GREEN
+interface FastEthernet0/0
+ip address 192.168.20.3 255.255.255.224
+no shutdown
+exit
+ip route 0.0.0.0 0.0.0.0 192.168.20.2
+
+R3 BLUE
+interface FastEthernet0/0
+ip address 192.168.30.2 255.255.255.192
+no shutdown
+exit
+ip route 0.0.0.0 0.0.0.0 192.168.30.1
