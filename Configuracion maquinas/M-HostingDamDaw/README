@@ -1,3 +1,0 @@
-Este archivo es un script de tipo hook diseñado para el sistema de copias de seguridad de Proxmox.
-Su función principal es actuar automaticamente justo cuando Proxmox termina de hacer una copia de seguridad local de una maquina virtual,
-para tomar ese archivo y subirlo de forma desatendida a Google Drive utilizando la herramienta rclone.
